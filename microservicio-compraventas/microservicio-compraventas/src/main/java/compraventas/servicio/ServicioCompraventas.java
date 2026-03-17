@@ -11,6 +11,8 @@ import compraventas.modelo.Compraventa;
 import compraventas.modelo.externo.ProductoExterno;
 import compraventas.modelo.externo.UsuarioExterno;
 import compraventas.repositorio.RepositorioCompraventas;
+import compraventas.puertos.PublicadorEventos;
+import compraventas.eventos.EventoCompraventaCreada;
 
 @Service 
 public class ServicioCompraventas implements IServicioCompraventas {
@@ -18,26 +20,32 @@ public class ServicioCompraventas implements IServicioCompraventas {
 	private RepositorioCompraventas repositorio;
 	private IProductosPort productosPort;
 	private IUsuariosPort usuariosPort;
+	private PublicadorEventos publicadorEventos;
 
 	@Autowired
 	public ServicioCompraventas(RepositorioCompraventas repositorio, 
 								IProductosPort productosPort,
-								IUsuariosPort usuariosPort) {
+								IUsuariosPort usuariosPort,
+								PublicadorEventos publicadorEventos) {
 		this.repositorio = repositorio;
 		this.productosPort = productosPort;
 		this.usuariosPort = usuariosPort;
+		this.publicadorEventos = publicadorEventos;
 	}
 
 	@Override
 	public String registrarCompraventa(String idProducto, String idComprador) {
 		
 		ProductoExterno producto = productosPort.obtenerProducto(idProducto);
+		
+		if (producto.isVendido()) {
+		    throw new IllegalArgumentException("El producto ya ha sido vendido y no puede comprarse.");
+		}
 
 		UsuarioExterno comprador = usuariosPort.obtenerUsuario(idComprador);
 
 		UsuarioExterno vendedor = usuariosPort.obtenerUsuario(producto.getVendedor());
 
-		// TODO (Nota 2 del enunciado): En una tarea posterior habrá que comprobar que el producto no esté ya vendido.
 
 		Compraventa cv = new Compraventa();
 		
@@ -57,6 +65,15 @@ public class ServicioCompraventas implements IServicioCompraventas {
 		cv.setFecha(LocalDateTime.now());
 
 		Compraventa guardada = repositorio.save(cv);
+		
+		// Construimos el evento y lo publicamos en el bus
+        EventoCompraventaCreada evento = new EventoCompraventaCreada(
+                guardada.getId(), 
+                guardada.getIdProducto(), 
+                guardada.getIdComprador(), 
+                guardada.getIdVendedor()
+        );
+        publicadorEventos.emitirEventoCompraventaCreada(evento);
 
 		return guardada.getId();
 	}

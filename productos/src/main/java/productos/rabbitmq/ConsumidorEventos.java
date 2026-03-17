@@ -1,4 +1,4 @@
-package productos.test.rabbitmq;
+package productos.rabbitmq;
 
 import java.util.Map;
 
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.messaging.handler.annotation.Header;
 
 import productos.puertos.ManejadorEventos;
+import productos.test.rabbitmq.RabbitMQConfig;
 
 @Component
 public class ConsumidorEventos {
@@ -18,16 +19,22 @@ public class ConsumidorEventos {
 	
     @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
     public void handleEvent(Map<String, Object> mensaje,
-			@Header(AmqpHeaders.RECEIVED_ROUTING_KEY) String routingKey) {
-	    if (!"bus.usuarios.usuario-creado".equals(routingKey)) {
-	    	return;
-	    }
-
-	    this.manejadorEventos.usuarioCreado(
-	    		(String) mensaje.get("id"),
-	    		(String) mensaje.get("email"),
-	    		(String) mensaje.get("nombre"),
-	    		(String) mensaje.get("apellidos"));
+            @Header(AmqpHeaders.RECEIVED_ROUTING_KEY) String routingKey) {
         
+        // 1. Si el evento viene de Usuarios
+        if ("bus.usuarios.usuario-creado".equals(routingKey)) {
+            this.manejadorEventos.usuarioCreado(
+                    (String) mensaje.get("id"),
+                    (String) mensaje.get("email"),
+                    (String) mensaje.get("nombre"),
+                    (String) mensaje.get("apellidos"));
+        }
+        
+        // 2. Si el evento viene de Compraventas (Tarea 7)
+        else if ("bus.compraventas.compraventa-creada".equals(routingKey)) {
+            // Extraemos el "idProducto" del JSON que enviaste desde tu microservicio
+            String idProducto = (String) mensaje.get("idProducto");
+            this.manejadorEventos.compraventaCreada(idProducto);
+        }
     }
 }

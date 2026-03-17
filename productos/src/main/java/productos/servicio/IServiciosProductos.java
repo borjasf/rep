@@ -48,5 +48,7 @@ public interface IServiciosProductos {
 	Page<ProductoDTO> historialDelMesPaginado(int mes, int anyo, Pageable paginacion) throws RepositorioException;
 
 	Page<ProductoDTO> buscarProductosPaginado(String idCategoria, String textoDescripcion, EstadoProducto estadoMinimo, Double precioMax, Pageable paginacion) throws RepositorioException, EntidadNoEncontrada;
+	
+	void marcarComoVendido(String idProducto) throws EntidadNoEncontrada;
 
 }

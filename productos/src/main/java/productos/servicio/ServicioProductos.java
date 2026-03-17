@@ -236,4 +236,15 @@ public class ServicioProductos implements IServiciosProductos {
 	    // Convertimos la página de entidades a página de DTOs
 	    return paginaProductos.map(producto -> ProductoDTO.fromEntity(producto));
 	}
+	
+	
+	@Override
+	public void marcarComoVendido(String idProducto) throws EntidadNoEncontrada {
+		// Reutilizamos tu método getProducto que ya busca y lanza la excepción si no existe
+		Producto producto = getProducto(idProducto);
+		
+		// Cambiamos el estado y guardamos
+		producto.setVendido(true);
+		repositorioProducto.save(producto);
+	}
 }
