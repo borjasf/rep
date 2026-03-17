@@ -22,6 +22,10 @@ public class Usuario implements Identificable {
 	private String telefono;
 	private boolean esAdmin;
 	
+	//Nuevos campos para los contadores de compras y ventas
+	private int contadorCompras;
+	private int contadorVentas;
+	
 	public Usuario() {	
 	}
 	
@@ -33,6 +37,8 @@ public class Usuario implements Identificable {
 		this.fechaNacimiento = fechaNacimiento;
 		this.telefono = telefono;
 		this.esAdmin = esAdmin;
+		this.contadorCompras = 0; // Inicializamos el contador de compras
+		this.contadorVentas = 0; // Inicializamos el contador de ventas
 	}
 
 	public String getId() {
@@ -98,6 +104,41 @@ public class Usuario implements Identificable {
 	public void setAdmin(boolean esAdmin) {
 		this.esAdmin = esAdmin;
 	}
+
+	public boolean isEsAdmin() {
+		return esAdmin;
+	}
+
+	public void setEsAdmin(boolean esAdmin) {
+		this.esAdmin = esAdmin;
+	}
+
+	public int getContadorCompras() {
+		return contadorCompras;
+	}
+
+	public void setContadorCompras(int contadorCompras) {
+		this.contadorCompras = contadorCompras;
+	}
+
+	public int getContadorVentas() {
+		return contadorVentas;
+	}
+
+	public void setContadorVentas(int contadorVentas) {
+		this.contadorVentas = contadorVentas;
+	}
+
+	public void incrementarContadorCompras() {
+		this.contadorCompras++;
+		
+	}
+
+	public void incrementarContadorVentas() {
+		this.contadorVentas++;
+		
+	}
+	
 	
 	
 	

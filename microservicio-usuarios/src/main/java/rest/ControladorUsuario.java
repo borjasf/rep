@@ -125,4 +125,25 @@ public class ControladorUsuario {
 		return Response.status(Response.Status.OK).entity(listado).build();
 	}
 
+	// ==========================================
+	// NUEVO ENDPOINT PÚBLICO PARA TAREA 6
+	// ==========================================
+
+	// Obtener solo el nombre de un usuario a partir de su ID (Público)
+	@GET
+	@Path("/{id}/nombre")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNombreUsuario(@PathParam("id") String id) throws Exception {
+
+		// Recuperamos el usuario de la base de datos
+		Usuario usuario = servicio.recuperar(id);
+
+		// Construimos un JSON simple con el nombre y apellidos
+		String jsonResponse = String.format("{\"nombre\": \"%s\", \"apellidos\": \"%s\"}", usuario.getNombre(),
+				usuario.getApellidos());
+
+		// Lo devolvemos con código 200 OK
+		return Response.status(Response.Status.OK).entity(jsonResponse).build();
+	}
+
 }

@@ -28,6 +28,9 @@ public class Producto {
 	
 	private int visualizaciones;
 	private boolean envioDisponible;
+	
+	//Nueva variable para poder infromar de que ha sido vendido
+	private boolean vendido;
 
 	@Embedded
 	@AttributeOverrides({
@@ -146,8 +149,13 @@ public class Producto {
 	public void setVendedor(Usuario vendedor) {
 		this.vendedor = vendedor;
 	}
-	
-	
-	
+
+	public boolean isVendido() {
+		return vendido;
+	}
+
+	public void setVendido(boolean vendido) {
+		this.vendido = vendido;
+	}
 	
 }

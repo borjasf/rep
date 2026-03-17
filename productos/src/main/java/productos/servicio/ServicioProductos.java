@@ -33,7 +33,6 @@ public class ServicioProductos implements IServiciosProductos {
 	private IRepositorioProducto repositorioProducto;
 	private IRepositorioUsuario repositorioUsuario;
 	private IRepositorioCategorias repositorioCategoria;
-	//private IRepositorioProductoMongo repositorioProductoMongo; // Para MongoDB
 	private RepositorioProductoAdHoc repositorioProductoAdHoc; // Para consultas complejas
 	private IServiciosCategorias servicioCategorias; // Para obtener descendientes de categorías en búsqueda
 	
@@ -42,7 +41,6 @@ public class ServicioProductos implements IServiciosProductos {
 		this.repositorioProducto = repositorioProducto;
 		this.repositorioUsuario = repositorioUsuario;
 		this.repositorioCategoria = repositorioCategoria;
-		//this.repositorioProductoMongo = repositorioProductoMongo;
 		this.repositorioProductoAdHoc = repositorioProductoAdHoc;
 		this.servicioCategorias = servicioCategorias;
 	}
@@ -166,7 +164,6 @@ public class ServicioProductos implements IServiciosProductos {
 		}
 		
 		//Llamar al nuevo método del repositorio para obtener las entidades
-		//List<Producto> productosDelVendedor = repositorioProductoMongo.findByVendedorIdOrderByFechaPublicacionDesc(idVendedor);
 		List<Producto> productosDelVendedor = repositorioProductoAdHoc.findByVendedorIdOrderByFechaPublicacionDesc(idVendedor);
 		
 		//Transformar la lista de Entidades (Producto) a una lista de DTOs (ProductoDTO)
@@ -202,7 +199,6 @@ public class ServicioProductos implements IServiciosProductos {
 	    }
 	    
 	    // Llamamos al repositorio pasándole la paginación
-	    //Page<Producto> paginaProductos = repositorioProductoMongo.findProductosByMonthAndYear(mes, anyo, paginacion);
 	    Page<Producto> paginaProductos = repositorioProductoAdHoc.findProductosByMonthAndYear(mes, anyo, paginacion);
 	    
 	    // Usamos .map() para transformar cada Entidad en DTO automáticamente
@@ -234,7 +230,6 @@ public class ServicioProductos implements IServiciosProductos {
 	    }
 
 	    // Llamamos al repositorio pasándole la paginación
-	    // Page<Producto> paginaProductos = repositorioProductoMongo.findProductosByCriteria(idsCategoriasParaBuscar, textoDescripcion, estadoMinimo, precioMax, paginacion);
 	    Page<Producto> paginaProductos = repositorioProductoAdHoc.findProductosByCriteria(
 	            idsCategoriasParaBuscar, textoDescripcion, estadoMinimo, precioMax, paginacion);
 	    

@@ -1,5 +1,6 @@
 package servicio;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,19 +10,21 @@ import repositorio.FactoriaRepositorios;
 import repositorio.Repositorio;
 import repositorio.RepositorioException;
 import repositoriosAdHoc.RepositorioUsuarioAdHoc;
+import usuarios.eventos.EventoUsuarioCreado;
+import usuarios.puertos.PublicadorEventos;
 
 public class ServicioUsuario implements IServicioUsuario {
 	
 	//Definimos el repositorio de usuarios
 	private RepositorioUsuarioAdHoc repositorioAdHoc = FactoriaRepositorios.getRepositorio(RepositorioUsuarioAdHoc.class);
 	private Repositorio<Usuario, String> repositorio = FactoriaRepositorios.getRepositorio(Usuario.class);
-	
+	private PublicadorEventos publicadorEventos = FactoriaServicios.getServicio(PublicadorEventos.class);
 	
 	/**
-	 * Funcionalidad: Registrar un nuevo usuario.
+	 * Funcionalidad: Registrar un nuevo usuario. 
 	 */
 	@Override
-	public String registrarUsuario(String nombre, String apellidos, String email, String clave, LocalDate fechaNacimiento, String telefono, boolean admin) throws RepositorioException {
+	public String registrarUsuario(String nombre, String apellidos, String email, String clave, LocalDate fechaNacimiento, String telefono, boolean admin) throws RepositorioException, IOException {
 		
 		//hacemos un control de integridad de los datos
 		if (nombre == null || nombre.isEmpty()) {
@@ -56,9 +59,13 @@ public class ServicioUsuario implements IServicioUsuario {
 		Usuario nuevoUsuario = new Usuario(email, nombre, apellidos, clave, fechaNacimiento, telefono, admin);
 
 		//lo almacenamos en el repositorio y devolvemos el id generado
-		 
+		String idGenerado = repositorio.add(nuevoUsuario);
 		
-		return repositorio.add(nuevoUsuario);
+		//Se crea el evento
+		EventoUsuarioCreado evento = new EventoUsuarioCreado(idGenerado, email, nombre, apellidos);
+		this.publicadorEventos.publicarEvento(evento);
+		
+		return idGenerado; 
 
 
 	}
@@ -160,6 +167,39 @@ public class ServicioUsuario implements IServicioUsuario {
 			return false;
 		}
 		return true;
+		
+	}
+
+
+	@Override
+	public void incrementarContadorCompras(String email) throws RepositorioException, EntidadNoEncontrada {
+		//Implementamos la funcionalidad para incrementar el contador de compras de un usuario.
+		//Buscamos al usuario por su id
+		Usuario usuario = repositorioAdHoc.buscarPorEmail(email);
+		if (usuario == null) {
+			throw new EntidadNoEncontrada("No se encontró el usuario con email: " + email);
+		}
+		
+		//Incrementamos el contador de compras
+		usuario.incrementarContadorCompras();
+		//Guardamos los cambios en el repositorio
+		repositorio.update(usuario);
+		
+	}
+
+
+	@Override
+	public void incrementarContadorVentas(String email) throws RepositorioException, EntidadNoEncontrada {
+		//Buscamos al usuario por su id
+		Usuario usuario = repositorioAdHoc.buscarPorEmail(email);
+		if (usuario == null) {
+			throw new EntidadNoEncontrada("No se encontró el usuario con email: " + email);
+		}
+		
+		//Incrementamos el contador de compras
+		usuario.incrementarContadorVentas();
+		//Guardamos los cambios en el repositorio
+		repositorio.update(usuario);
 		
 	}
 }

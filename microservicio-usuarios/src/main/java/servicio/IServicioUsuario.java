@@ -1,5 +1,6 @@
 package servicio;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface IServicioUsuario {
 
 	// Funcionalidad: Registrar un nuevo usuario (donde telefono es opcional)
 	String registrarUsuario(String nombre, String apellidos, String email, String clave, LocalDate fechaNacimiento,
-			String telefono, boolean admin) throws RepositorioException;
+			String telefono, boolean admin) throws RepositorioException, IOException;
 
 	// Funcionalidad: Permitir que un usuario existente pueda cambiar sus datos para
 	// poder mantener su informacion actualizada
@@ -36,5 +37,9 @@ public interface IServicioUsuario {
 	List<Usuario> recuperarTodos() throws RepositorioException;
 
 	boolean autenticarUsuario(String username, String password) throws RepositorioException, EntidadNoEncontrada;
+	
+	//Funcionalidad para poder gestionar los eventos de compraventas
+	void incrementarContadorCompras(String emailUsuario) throws RepositorioException, EntidadNoEncontrada;
+	void incrementarContadorVentas(String emailUsuario) throws RepositorioException, EntidadNoEncontrada;
 
 }
