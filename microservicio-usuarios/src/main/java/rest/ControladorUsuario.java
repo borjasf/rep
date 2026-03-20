@@ -133,7 +133,6 @@ public class ControladorUsuario {
 	@GET
 	@Path("/{id}/nombre")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PermitAll // Permite el acceso sin token
 	public Response getNombreUsuario(@PathParam("id") String id) throws Exception {
 
 		// Recuperamos el usuario de la base de datos
