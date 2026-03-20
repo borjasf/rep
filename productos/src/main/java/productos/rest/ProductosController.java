@@ -76,19 +76,20 @@ public class ProductosController implements  ProductosApi {
 	public EntityModel<ProductoDTO> getProductoById(@PathVariable String id) throws Exception {
 		ProductoDTO producto = this.servicio.getProductoDTO(id);
 		
-		//Envolver el DTO en un EntityModel y agregar enlaces self
+		/*//Envolver el DTO en un EntityModel y agregar enlaces self
 		EntityModel<ProductoDTO> model = EntityModel.of(producto);
 		model.add( WebMvcLinkBuilder.linkTo(
 					 WebMvcLinkBuilder
 					 	.methodOn(ProductosController.class)
 					 	.getProductoById(id))
 				 .withSelfRel());
-		return model;
+		return model;*/
+		return productoDTOAssembler.toModel(producto); // Mucho mas limpio
 	}
 
 	@PatchMapping("/{id}/recogida")
 	public ResponseEntity<Void> asignarLugarRecogida(@PathVariable String id,
-			@RequestBody LugarRecogidaDTO lugarRecogida) throws Exception {
+			@Valid @RequestBody LugarRecogidaDTO lugarRecogida) throws Exception {
 		this.servicio.asignarLugarRecogida(id, lugarRecogida.getDescripcion(),
 				lugarRecogida.getLongitud(), lugarRecogida.getLatitud());
 		return ResponseEntity.noContent().build();
@@ -96,7 +97,7 @@ public class ProductosController implements  ProductosApi {
 
 	@PatchMapping("/{id}")
 	public ResponseEntity<Void> modificarProducto(@PathVariable String id,
-			@RequestBody ModificarProductoDTO productoModificado) throws Exception {
+			@Valid @RequestBody ModificarProductoDTO productoModificado) throws Exception {
 		this.servicio.modificarProducto(id, productoModificado.getPrecio(), productoModificado.getDescripcion());
 		return ResponseEntity.noContent().build();
 	}

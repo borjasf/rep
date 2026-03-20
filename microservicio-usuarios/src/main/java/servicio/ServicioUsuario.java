@@ -10,7 +10,11 @@ import repositorio.FactoriaRepositorios;
 import repositorio.Repositorio;
 import repositorio.RepositorioException;
 import repositoriosAdHoc.RepositorioUsuarioAdHoc;
+import usuarios.eventos.EventoUsuarioActualizado;
+import usuarios.eventos.EventoUsuarioContadorCompras;
+import usuarios.eventos.EventoUsuarioContadorVentas;
 import usuarios.eventos.EventoUsuarioCreado;
+import usuarios.eventos.EventoUsuarioRol;
 import usuarios.puertos.PublicadorEventos;
 
 public class ServicioUsuario implements IServicioUsuario {
@@ -73,9 +77,9 @@ public class ServicioUsuario implements IServicioUsuario {
 	
 	/**
 	 * Funcionalidad: Actualizar datos de usuario.
-	 */
+	 * */
 	@Override
-	public void actualizarDatosUsuario(String idUsuario, String nombre, String apellidos, String email, String clave, LocalDate fechaNacimiento, String telefono) throws RepositorioException, EntidadNoEncontrada {
+	public void actualizarDatosUsuario(String idUsuario, String nombre, String apellidos, String email, String clave, LocalDate fechaNacimiento, String telefono) throws RepositorioException, EntidadNoEncontrada, IOException {
 		
 		if(email == null || email.isEmpty() || !email.contains("@")) {
 			throw new IllegalArgumentException("El email no es válido");
@@ -117,6 +121,10 @@ public class ServicioUsuario implements IServicioUsuario {
 		
 		//Guardamos los cambios en el repositorio
 		repositorio.update(usuarioExistente);	
+		
+		//Creamos el evento de usuario actualizado
+		EventoUsuarioActualizado evento = new EventoUsuarioActualizado(idUsuario, email, nombre, apellidos, clave, telefono, fechaNacimiento.toString());
+		this.publicadorEventos.publicarEvento(evento);
 	}
 	
 	// ELIMINADO: public void modificarCategoria(...)
@@ -124,13 +132,17 @@ public class ServicioUsuario implements IServicioUsuario {
 
 
 	@Override
-	public void asignarRolAdmin(String idUsuario2) throws RepositorioException, EntidadNoEncontrada {
+	public void asignarRolAdmin(String idUsuario2) throws RepositorioException, EntidadNoEncontrada, IOException {
 		
 		Usuario usuario = repositorio.getById(idUsuario2);
 		
 		usuario.setAdmin(true);
 		
 		repositorio.update(usuario);
+		
+		//Creamos el evento de usuario actualizado
+		EventoUsuarioRol evento = new EventoUsuarioRol(idUsuario2, usuario.getEmail(), usuario.getNombre(), true);
+		this.publicadorEventos.publicarEvento(evento);
 	}
 
 	@Override
@@ -172,7 +184,7 @@ public class ServicioUsuario implements IServicioUsuario {
 
 
 	@Override
-	public void incrementarContadorCompras(String email) throws RepositorioException, EntidadNoEncontrada {
+	public void incrementarContadorCompras(String email) throws RepositorioException, EntidadNoEncontrada, IOException {
 		//Implementamos la funcionalidad para incrementar el contador de compras de un usuario.
 		//Buscamos al usuario por su id
 		Usuario usuario = repositorioAdHoc.buscarPorEmail(email);
@@ -185,11 +197,15 @@ public class ServicioUsuario implements IServicioUsuario {
 		//Guardamos los cambios en el repositorio
 		repositorio.update(usuario);
 		
+		//Creamos el evento de contador de compras actualizado
+		EventoUsuarioContadorCompras evento = new EventoUsuarioContadorCompras(usuario.getId(), email, usuario.getContadorCompras());
+		this.publicadorEventos.publicarEvento(evento);
+		
 	}
 
 
 	@Override
-	public void incrementarContadorVentas(String email) throws RepositorioException, EntidadNoEncontrada {
+	public void incrementarContadorVentas(String email) throws RepositorioException, EntidadNoEncontrada, IOException {
 		//Buscamos al usuario por su id
 		Usuario usuario = repositorioAdHoc.buscarPorEmail(email);
 		if (usuario == null) {
@@ -200,6 +216,10 @@ public class ServicioUsuario implements IServicioUsuario {
 		usuario.incrementarContadorVentas();
 		//Guardamos los cambios en el repositorio
 		repositorio.update(usuario);
+		
+		//Creamos el evento de contador de compras actualizado
+		EventoUsuarioContadorVentas evento = new EventoUsuarioContadorVentas(usuario.getId(), email, usuario.getContadorVentas());
+		this.publicadorEventos.publicarEvento(evento);
 		
 	}
 }

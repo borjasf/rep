@@ -17,7 +17,7 @@ public interface IServicioUsuario {
 	// Funcionalidad: Permitir que un usuario existente pueda cambiar sus datos para
 	// poder mantener su informacion actualizada
 	void actualizarDatosUsuario(String idUsuario, String nombre, String apellidos, String email, String clave,
-			LocalDate fechaNacimiento, String telefono) throws RepositorioException, EntidadNoEncontrada;
+			LocalDate fechaNacimiento, String telefono) throws RepositorioException, EntidadNoEncontrada, IOException;
 
 	/*
 	 * //Funcionalidad: Permitir a un usuario con privilegios de administrador
@@ -26,7 +26,7 @@ public interface IServicioUsuario {
 	 * throws RepositorioException, EntidadNoEncontrada;
 	 */
 
-	void asignarRolAdmin(String idUsuario2) throws RepositorioException, EntidadNoEncontrada;
+	void asignarRolAdmin(String idUsuario2) throws RepositorioException, EntidadNoEncontrada, IOException;
 
 	Usuario iniciarSesion(String email, String clave) throws RepositorioException, EntidadNoEncontrada;
 
@@ -39,7 +39,7 @@ public interface IServicioUsuario {
 	boolean autenticarUsuario(String username, String password) throws RepositorioException, EntidadNoEncontrada;
 	
 	//Funcionalidad para poder gestionar los eventos de compraventas
-	void incrementarContadorCompras(String emailUsuario) throws RepositorioException, EntidadNoEncontrada;
-	void incrementarContadorVentas(String emailUsuario) throws RepositorioException, EntidadNoEncontrada;
+	void incrementarContadorCompras(String emailUsuario) throws RepositorioException, EntidadNoEncontrada, IOException;
+	void incrementarContadorVentas(String emailUsuario) throws RepositorioException, EntidadNoEncontrada, IOException;
 
 }

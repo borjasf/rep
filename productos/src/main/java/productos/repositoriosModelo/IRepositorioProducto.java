@@ -15,7 +15,7 @@ import modelo.Producto;
  * Hereda las operaciones CRUD genéricas.
  */
 @NoRepositoryBean
-public interface IRepositorioProducto extends PagingAndSortingRepository<Producto, String> {
+public interface IRepositorioProducto extends PagingAndSortingRepository<Producto, String>{
 	// No se necesitan métodos específicos adicionales por ahora.
 	// Métodos heredados: add, update, delete, getById, getAll
 	Page<Producto> findProductosByMonthAndYear(int mes, int ano, Pageable pageable);

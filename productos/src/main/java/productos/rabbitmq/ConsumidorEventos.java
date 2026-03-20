@@ -17,14 +17,14 @@ public class ConsumidorEventos {
 	@Autowired
 	private ManejadorEventos manejadorEventos;
 	
-    @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
-    public void handleEvent(Map<String, Object> mensaje,
-            @Header(AmqpHeaders.RECEIVED_ROUTING_KEY) String routingKey) {
-        
-        // 1. Si el evento viene de Usuarios
-        if ("bus.usuarios.usuario-creado".equals(routingKey)) {
-            this.manejadorEventos.usuarioCreado(
-                    (String) mensaje.get("id"),
+	@RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
+	public void handleEvent(Map<String, Object> mensaje,
+	        @Header(AmqpHeaders.RECEIVED_ROUTING_KEY) String routingKey) {
+	    
+	    // 1. Si el evento viene de Usuarios
+	    if ("bus.usuarios.usuario-creado".equals(routingKey)) {
+	        this.manejadorEventos.usuarioCreado(
+	                (String) mensaje.get("id"),
                     (String) mensaje.get("email"),
                     (String) mensaje.get("nombre"),
                     (String) mensaje.get("apellidos"));

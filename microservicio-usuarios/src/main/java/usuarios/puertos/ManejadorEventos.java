@@ -1,5 +1,7 @@
 package usuarios.puertos;
 
+import java.io.IOException;
+
 import repositorio.EntidadNoEncontrada;
 import repositorio.RepositorioException;
 import servicio.FactoriaServicios;
@@ -13,7 +15,7 @@ public class ManejadorEventos {
 
 	// Método que será invocado cuando llegue el evento "compraventa-creada"
 	public void procesarEventoCompraventaCreada(String emailComprador, String emailVendedor)
-			throws RepositorioException, EntidadNoEncontrada {
+			throws RepositorioException, EntidadNoEncontrada, IOException {
 		// Incrementamos los contadores utilizando la lógica que creamos anteriormente
 		servicio.incrementarContadorCompras(emailComprador);
 		servicio.incrementarContadorVentas(emailVendedor);
