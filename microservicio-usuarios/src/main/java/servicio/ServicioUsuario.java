@@ -184,42 +184,32 @@ public class ServicioUsuario implements IServicioUsuario {
 
 
 	@Override
-	public void incrementarContadorCompras(String email) throws RepositorioException, EntidadNoEncontrada, IOException {
-		//Implementamos la funcionalidad para incrementar el contador de compras de un usuario.
-		//Buscamos al usuario por su id
-		Usuario usuario = repositorioAdHoc.buscarPorEmail(email);
+	public void incrementarContadorCompras(String id) throws RepositorioException, EntidadNoEncontrada, IOException {
+		// Cambiamos buscarPorEmail por getById
+		Usuario usuario = repositorio.getById(id);
 		if (usuario == null) {
-			throw new EntidadNoEncontrada("No se encontró el usuario con email: " + email);
+			throw new EntidadNoEncontrada("No se encontró el usuario con ID: " + id);
 		}
 		
-		//Incrementamos el contador de compras
 		usuario.incrementarContadorCompras();
-		//Guardamos los cambios en el repositorio
 		repositorio.update(usuario);
 		
-		//Creamos el evento de contador de compras actualizado
-		EventoUsuarioContadorCompras evento = new EventoUsuarioContadorCompras(usuario.getId(), email, usuario.getContadorCompras());
+		EventoUsuarioContadorCompras evento = new EventoUsuarioContadorCompras(usuario.getId(), usuario.getEmail(), usuario.getContadorCompras());
 		this.publicadorEventos.publicarEvento(evento);
-		
 	}
 
-
 	@Override
-	public void incrementarContadorVentas(String email) throws RepositorioException, EntidadNoEncontrada, IOException {
-		//Buscamos al usuario por su id
-		Usuario usuario = repositorioAdHoc.buscarPorEmail(email);
+	public void incrementarContadorVentas(String id) throws RepositorioException, EntidadNoEncontrada, IOException {
+		// Cambiamos buscarPorEmail por getById
+		Usuario usuario = repositorio.getById(id);
 		if (usuario == null) {
-			throw new EntidadNoEncontrada("No se encontró el usuario con email: " + email);
+			throw new EntidadNoEncontrada("No se encontró el usuario con ID: " + id);
 		}
 		
-		//Incrementamos el contador de compras
 		usuario.incrementarContadorVentas();
-		//Guardamos los cambios en el repositorio
 		repositorio.update(usuario);
 		
-		//Creamos el evento de contador de compras actualizado
-		EventoUsuarioContadorVentas evento = new EventoUsuarioContadorVentas(usuario.getId(), email, usuario.getContadorVentas());
+		EventoUsuarioContadorVentas evento = new EventoUsuarioContadorVentas(usuario.getId(), usuario.getEmail(), usuario.getContadorVentas());
 		this.publicadorEventos.publicarEvento(evento);
-		
 	}
 }

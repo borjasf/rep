@@ -2,14 +2,16 @@ package modelo;
 
 import java.time.LocalDateTime;
 import javax.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "productos")
 public class Producto {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
-	private String id; 
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	private String id;
 	
 	private String titulo; 
 	

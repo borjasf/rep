@@ -15,7 +15,7 @@ public class ProductosAdapter implements IProductosPort {
 	public ProductosAdapter() {
 		// Configuramos Retrofit para que apunte al puerto 8081 (donde está Productos)
 		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl("http://localhost:8081/") 
+				.baseUrl("http://localhost:8083/") 
 				.addConverterFactory(JacksonConverterFactory.create())
 				.build();
 		

@@ -1,4 +1,5 @@
 package productos.dto;
+
 import java.time.LocalDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -6,10 +7,10 @@ import modelo.EstadoProducto;
 import modelo.LugarRecogida;
 import modelo.Producto;
 
-@Schema(description = "DTO de la entidad Encuesta")
-public class ProductoDTO{
+@Schema(description = "DTO de la entidad Producto")
+public class ProductoDTO {
 
-	@Schema(description = "Identificador dedel producto")
+	@Schema(description = "Identificador del producto")
 	private String id;
 	@Schema(description = "Título del producto")
 	private String titulo; 
@@ -29,8 +30,10 @@ public class ProductoDTO{
     private LugarRecogida lugarRecogida;
 	@Schema(description = "Nombre de la categoría del producto")
     private String nombreCategoria;
-	@Schema(description = "Nombre del vendedor del producto")
-    private String nombreVendedor;
+	@Schema(description = "Identificador del vendedor del producto")
+    private String vendedor;
+	@Schema(description = "Indica si el producto ya ha sido vendido")
+    private boolean vendido; // NUEVO CAMPO
     
 	//POJO
 	public ProductoDTO() {
@@ -38,7 +41,7 @@ public class ProductoDTO{
 	
 	public ProductoDTO(String id, String titulo, String descripcion, double precio, EstadoProducto estado,
 			LocalDateTime fechaPublicacion, int visualizaciones, boolean envioDisponible,
-			LugarRecogida lugarRecogida, String nombreCategoria, String nombreVendedor) {
+			LugarRecogida lugarRecogida, String nombreCategoria, String vendedor, boolean vendido) {
 		this.id = id;
 		this.titulo = titulo;
 		this.descripcion = descripcion;
@@ -49,9 +52,11 @@ public class ProductoDTO{
 		this.envioDisponible = envioDisponible;
 		this.lugarRecogida = lugarRecogida;
 		this.nombreCategoria = nombreCategoria;
-		this.nombreVendedor = nombreVendedor;
+		this.vendedor = vendedor;
+		this.vendido = vendido; // NUEVA ASIGNACIÓN
 	}
-    	public String getId() {
+    
+	public String getId() {
 		return id;
 	}
 
@@ -123,22 +128,31 @@ public class ProductoDTO{
 		this.lugarRecogida = lugarRecogida;
 	}
 
-	
 	public String getNombreCategoria() {
         return nombreCategoria;
     }
+	
     public void setNombreCategoria(String nombreCategoria) {
         this.nombreCategoria = nombreCategoria;
     }
 
-    public String getNombreVendedor() {
-        return nombreVendedor;
-    }
-    public void setNombreVendedor(String nombreVendedor) {
-        this.nombreVendedor = nombreVendedor;
+    public String getVendedor() {
+        return vendedor;
     }
     
-    public static ProductoDTO fromEntity(Producto producto) {
+    public void setVendedor(String vendedor) {
+        this.vendedor = vendedor;
+    }
+    
+    public boolean isVendido() { // NUEVO GETTER
+		return vendido;
+	}
+
+	public void setVendido(boolean vendido) { // NUEVO SETTER
+		this.vendido = vendido;
+	}
+
+	public static ProductoDTO fromEntity(Producto producto) {
 		return new ProductoDTO(
 			producto.getId(),
 			producto.getTitulo(),
@@ -150,8 +164,8 @@ public class ProductoDTO{
 			producto.isEnvioDisponible(),
 			producto.getLugarRecogida(),
 			producto.getCategoria().getNombre(),
-			producto.getVendedor().getNombre()
+			producto.getVendedor().getId(),
+			producto.isVendido()
 		);
 	}
-	
 }
