@@ -14,7 +14,8 @@ public class Usuario implements Identificable {
 	private String email;
 	private String nombre;
 	private String apellidos; 
-	
+	private String gitHubId; // Nuevo campo para almacenar el ID de GitHub
+
 	@Lob
 	private String clave;
 	
@@ -137,6 +138,14 @@ public class Usuario implements Identificable {
 	public void incrementarContadorVentas() {
 		this.contadorVentas++;
 		
+	}
+	
+	public String getGitHubId() {
+		return gitHubId;
+	}
+
+	public void setGitHubId(String gitHubId) {
+		this.gitHubId = gitHubId;
 	}
 	
 	

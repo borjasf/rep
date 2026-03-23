@@ -169,6 +169,18 @@ public class ServicioUsuario implements IServicioUsuario {
 	public List<Usuario> recuperarTodos() throws RepositorioException {
 		return repositorio.getAll();	
 	}
+	
+	//Recuperamos al usuario por su id de Github
+	@Override
+	public Usuario getByGitHubId(String githubId) throws RepositorioException, EntidadNoEncontrada {
+		Usuario usuario = repositorioAdHoc.getByGitHubId(githubId);
+		
+		if (usuario == null) {
+			throw new EntidadNoEncontrada("No se encontró el usuario con GitHub ID: " + githubId);
+		}
+		
+		return usuario;
+	}
 
 
 	@Override
@@ -211,5 +223,33 @@ public class ServicioUsuario implements IServicioUsuario {
 		
 		EventoUsuarioContadorVentas evento = new EventoUsuarioContadorVentas(usuario.getId(), usuario.getEmail(), usuario.getContadorVentas());
 		this.publicadorEventos.publicarEvento(evento);
+	}
+	
+	@Override
+	public Usuario getByEmail(String email) throws RepositorioException, EntidadNoEncontrada {
+		Usuario usuario = repositorioAdHoc.buscarPorEmail(email);
+		
+		if (usuario == null) {
+			throw new EntidadNoEncontrada("No se encontró el usuario con email: " + email);
+		}
+		
+		return usuario;
+	}
+
+
+	@Override
+	public void vincularGitHub(String email, String githubId)
+			throws RepositorioException, EntidadNoEncontrada, IOException {
+		Usuario usuarioExistente = repositorioAdHoc.buscarPorEmail(email);
+		if (usuarioExistente == null) {
+			throw new EntidadNoEncontrada("No se encontró el usuario con ID: " + email);
+		}
+		usuarioExistente.setGitHubId(githubId);
+		repositorio.update(usuarioExistente);
+		
+		//Creamos el evento de actualización de GitHub ID
+		EventoUsuarioActualizado evento = new EventoUsuarioActualizado(usuarioExistente.getId(), email, usuarioExistente.getNombre(), usuarioExistente.getApellidos(), usuarioExistente.getClave(), usuarioExistente.getTelefono(), usuarioExistente.getFechaNacimiento().toString());
+		this.publicadorEventos.publicarEvento(evento);
+		
 	}
 }

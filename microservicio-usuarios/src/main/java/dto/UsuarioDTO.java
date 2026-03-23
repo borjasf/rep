@@ -1,25 +1,18 @@
 package dto;
 
-import java.time.LocalDate;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import utils.LocalDateXmlAdapter;
 
 public class UsuarioDTO {
 	private String id;
 	private String nombre;
 	private String apellidos;
 	private String email;
-	
-	@XmlJavaTypeAdapter(value = LocalDateXmlAdapter.class)
-	private LocalDate fechaNacimiento;
-	
+	private String fechaNacimiento;
 	private String telefono;
 	private boolean admin;
 
 	public UsuarioDTO() {}
 
-	public UsuarioDTO(String id, String nombre, String apellidos, String email, 
-			LocalDate fechaNacimiento, String telefono, boolean admin) {
+	public UsuarioDTO(String id, String nombre, String apellidos, String email,  String fechaNacimiento, String telefono, boolean admin) {
 		this.id = id;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
@@ -38,8 +31,7 @@ public class UsuarioDTO {
 	public void setApellidos(String apellidos) { this.apellidos = apellidos; }
 	public String getEmail() { return email; }
 	public void setEmail(String email) { this.email = email; }
-	public LocalDate getFechaNacimiento() { return fechaNacimiento; }
-	public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+	public String getFechaNacimiento() { return fechaNacimiento; }
 	public String getTelefono() { return telefono; }
 	public void setTelefono(String telefono) { this.telefono = telefono; }
 	public boolean isAdmin() { return admin; }

@@ -25,16 +25,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.AccessDeniedException;
+
 @Service 
 @Transactional
 public class ServicioProductos implements IServiciosProductos {
 
-	
 	private IRepositorioProducto repositorioProducto;
-	private IRepositorioUsuario repositorioUsuario;
+	private IRepositorioUsuario repositorioUsuario; // Asumo que es Spring Data (CrudRepository)
 	private IRepositorioCategorias repositorioCategoria;
-	private RepositorioProductoAdHoc repositorioProductoAdHoc; // Para consultas complejas
-	private IServiciosCategorias servicioCategorias; // Para obtener descendientes de categorías en búsqueda
+	private RepositorioProductoAdHoc repositorioProductoAdHoc; 
+	private IServiciosCategorias servicioCategorias; 
 	
 	@Autowired
 	public ServicioProductos(IRepositorioProducto repositorioProducto, IRepositorioUsuario repositorioUsuario, IRepositorioCategorias repositorioCategoria, RepositorioProductoAdHoc repositorioProductoAdHoc, IServiciosCategorias servicioCategorias) {
@@ -80,7 +82,14 @@ public class ServicioProductos implements IServiciosProductos {
 	public void asignarLugarRecogida(String idProducto, String descripcionLugar, double longitud, double latitud)
 						throws EntidadNoEncontrada, IllegalArgumentException {
 
-		Producto producto = getProducto(idProducto); // Reutilizamos el método que ya tienes para obtener el producto o lanzar EntidadNoEncontrada
+		// 1. Reutilizamos tu método interno
+		Producto producto = getProducto(idProducto); 
+
+		// 2. COMPROBACIÓN DE SEGURIDAD: ¿Es el dueño?
+		String idAutenticado = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (!idAutenticado.equals(producto.getVendedor().getId())) { 
+			throw new AccessDeniedException("Error: No puedes modificar un producto que no te pertenece.");
+		}
 
 		if (descripcionLugar == null || descripcionLugar.trim().isEmpty()) {
 		    throw new IllegalArgumentException("La descripción del lugar de recogida no puede estar vacía.");
@@ -92,52 +101,48 @@ public class ServicioProductos implements IServiciosProductos {
 	}
 
 	@Override
-	public void modificarProducto(String idProducto, Double nuevoPrecio, String nuevaDescripcion)
-						throws EntidadNoEncontrada, IllegalArgumentException {
-
-		Producto producto = getProducto(idProducto); // Reutilizamos el método que ya tienes para obtener el producto o lanzar EntidadNoEncontrada
-		boolean modificado = false;
-
-		if (nuevoPrecio != null) {
-			if (nuevoPrecio < 0) {
-				throw new IllegalArgumentException("El precio no puede ser negativo.");
-			}
-			producto.setPrecio(nuevoPrecio);
-			modificado = true;
-		}
-		if (nuevaDescripcion != null) {
-			producto.setDescripcion(nuevaDescripcion);
-			modificado = true;
+	public void modificarProducto(String id, Double precio, String descripcion) 
+            throws EntidadNoEncontrada, IllegalArgumentException {
+		// 1. Reutilizamos tu método interno
+		Producto producto = getProducto(id);
+		
+		// 2. COMPROBACIÓN DE SEGURIDAD: ¿Es el dueño?
+		String idAutenticado = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (!idAutenticado.equals(producto.getVendedor().getId())) { 
+			throw new AccessDeniedException("Error: No puedes modificar un producto que no te pertenece.");
 		}
 
-		if (modificado) {
-			repositorioProducto.save(producto);
+		// 3. Modificamos y guardamos
+		if (precio != null) {
+			producto.setPrecio(precio);
 		}
+		if (descripcion != null) {
+			producto.setDescripcion(descripcion);
+		}
+		repositorioProducto.save(producto);
 	}
 
 	@Override
 	public void anadirVisualizacion(String idProducto)
 						throws EntidadNoEncontrada {
 
-		Producto producto =getProducto(idProducto);
+		Producto producto = getProducto(idProducto);
 		int visualizacionesActuales = producto.getVisualizaciones();
 		producto.setVisualizaciones(visualizacionesActuales + 1);
 		repositorioProducto.save(producto);
 	}
 
-	//Creamos una nueva funcion que nos permitira conseguir un ProductoDTO 
 	@Override
 	public ProductoDTO getProductoDTO(String idProducto) throws EntidadNoEncontrada {
-	   			if (idProducto == null || idProducto.isEmpty())
-				throw new IllegalArgumentException("id: no debe ser nulo ni vacio");
-			
-			Optional<Producto> productoOpt = repositorioProducto.findById(idProducto);
-			if(productoOpt.isPresent() == false) {
-				throw new EntidadNoEncontrada("No se encontró el producto con id: " + idProducto);
-				
-			} else {
-				return ProductoDTO.fromEntity(productoOpt.get());
-			}
+		if (idProducto == null || idProducto.isEmpty())
+			throw new IllegalArgumentException("id: no debe ser nulo ni vacio");
+		
+		Optional<Producto> productoOpt = repositorioProducto.findById(idProducto);
+		if(productoOpt.isPresent() == false) {
+			throw new EntidadNoEncontrada("No se encontró el producto con id: " + idProducto);
+		} else {
+			return ProductoDTO.fromEntity(productoOpt.get());
+		}
 	}
 	
 	public Producto getProducto(String id) throws EntidadNoEncontrada{
@@ -147,32 +152,26 @@ public class ServicioProductos implements IServiciosProductos {
 		Optional<Producto> productoOpt = repositorioProducto.findById(id);
 		if(productoOpt.isPresent() == false) {
 			throw new EntidadNoEncontrada("No se encontró el producto con id: " + id);
-			
 		} else {
 			return productoOpt.get();
 		}
 	}
 	    
-
 	@Override
 	public List<ProductoDTO> getProductosPorVendedor(String idVendedor) 
 			throws RepositorioException, IllegalArgumentException {
 		
-		//  Validación de entrada
 		if (idVendedor == null || idVendedor.trim().isEmpty()) {
 			throw new IllegalArgumentException("El ID del vendedor no puede ser nulo o vacío.");
 		}
 		
-		//Llamar al nuevo método del repositorio para obtener las entidades
 		List<Producto> productosDelVendedor = repositorioProductoAdHoc.findByVendedorIdOrderByFechaPublicacionDesc(idVendedor);
 		
-		//Transformar la lista de Entidades (Producto) a una lista de DTOs (ProductoDTO)
 		List<ProductoDTO> productosDTO = new ArrayList<>();
 		for (Producto p : productosDelVendedor) {
-			productosDTO.add(ProductoDTO.fromEntity(p)); // Reutilizamos el método que ya tienes
+			productosDTO.add(ProductoDTO.fromEntity(p)); 
 		}
 		
-		// 5. Devolver la lista de DTOs
 		return productosDTO;
 	}
 
@@ -198,10 +197,7 @@ public class ServicioProductos implements IServiciosProductos {
 	        throw new IllegalArgumentException("Mes o año inválido.");
 	    }
 	    
-	    // Llamamos al repositorio pasándole la paginación
 	    Page<Producto> paginaProductos = repositorioProductoAdHoc.findProductosByMonthAndYear(mes, anyo, paginacion);
-	    
-	    // Usamos .map() para transformar cada Entidad en DTO automáticamente
 	    return paginaProductos.map(producto -> ProductoDTO.fromEntity(producto));
 	}
 
@@ -229,21 +225,15 @@ public class ServicioProductos implements IServiciosProductos {
 	        }
 	    }
 
-	    // Llamamos al repositorio pasándole la paginación
 	    Page<Producto> paginaProductos = repositorioProductoAdHoc.findProductosByCriteria(
 	            idsCategoriasParaBuscar, textoDescripcion, estadoMinimo, precioMax, paginacion);
 	    
-	    // Convertimos la página de entidades a página de DTOs
 	    return paginaProductos.map(producto -> ProductoDTO.fromEntity(producto));
 	}
 	
-	
 	@Override
 	public void marcarComoVendido(String idProducto) throws EntidadNoEncontrada {
-		// Reutilizamos tu método getProducto que ya busca y lanza la excepción si no existe
 		Producto producto = getProducto(idProducto);
-		
-		// Cambiamos el estado y guardamos
 		producto.setVendido(true);
 		repositorioProducto.save(producto);
 	}

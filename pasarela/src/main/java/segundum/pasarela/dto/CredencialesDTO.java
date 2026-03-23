@@ -1,4 +1,4 @@
-package dto;
+package segundum.pasarela.dto;
 
 public class CredencialesDTO {
 	private String email;

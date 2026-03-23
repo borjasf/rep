@@ -42,4 +42,10 @@ public interface IServicioUsuario {
 	void incrementarContadorCompras(String emailUsuario) throws RepositorioException, EntidadNoEncontrada, IOException;
 	void incrementarContadorVentas(String emailUsuario) throws RepositorioException, EntidadNoEncontrada, IOException;
 
+	Usuario getByGitHubId(String githubId) throws RepositorioException, EntidadNoEncontrada;
+
+	Usuario getByEmail(String email) throws RepositorioException, EntidadNoEncontrada;
+	
+	void vincularGitHub(String email, String githubId) throws RepositorioException, EntidadNoEncontrada, IOException;
+
 }

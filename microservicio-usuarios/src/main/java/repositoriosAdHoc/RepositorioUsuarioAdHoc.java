@@ -10,5 +10,6 @@ public interface RepositorioUsuarioAdHoc extends RepositorioString<Usuario>{
 	//Por ejemplo, buscar usuarios por rol, estado, etc.
 	
 	Usuario buscarPorEmail(String email) throws RepositorioException;
+	Usuario getByGitHubId(String githubId) throws RepositorioException;
 
 }

@@ -1,31 +1,35 @@
-package dto;
-
-
-
-public class UsuarioRegistroDTO {
+package segundum.pasarela.dto;
+public class UsuarioDTO {
+	private String id;
 	private String nombre;
 	private String apellidos;
 	private String email;
-	private String clave;
-
 	private String fechaNacimiento;
-	
 	private String telefono;
 	private boolean admin;
 
-	public UsuarioRegistroDTO() {}
+	public UsuarioDTO() {}
 
-	// Genera Getters y Setters para nombre, apellidos, email, clave, fechaNacimiento, telefono, admin
+	public UsuarioDTO(String id, String nombre, String apellidos, String email,  String fechaNacimiento, String telefono, boolean admin) {
+		this.id = id;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.email = email;
+		this.fechaNacimiento = fechaNacimiento;
+		this.telefono = telefono;
+		this.admin = admin;
+	}
+
+	// Genera los Getters y Setters para todos estos campos (id, nombre, apellidos, email, fechaNacimiento, telefono, admin)
+	public String getId() { return id; }
+	public void setId(String id) { this.id = id; }
 	public String getNombre() { return nombre; }
 	public void setNombre(String nombre) { this.nombre = nombre; }
 	public String getApellidos() { return apellidos; }
 	public void setApellidos(String apellidos) { this.apellidos = apellidos; }
 	public String getEmail() { return email; }
 	public void setEmail(String email) { this.email = email; }
-	public String getClave() { return clave; }
-	public void setClave(String clave) { this.clave = clave; }
 	public String getFechaNacimiento() { return fechaNacimiento; }
-	public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 	public String getTelefono() { return telefono; }
 	public void setTelefono(String telefono) { this.telefono = telefono; }
 	public boolean isAdmin() { return admin; }

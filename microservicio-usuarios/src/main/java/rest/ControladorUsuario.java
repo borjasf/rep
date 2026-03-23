@@ -1,6 +1,7 @@
 package rest;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import javax.ws.rs.PATCH;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -24,6 +26,7 @@ import dto.UsuarioDTO;
 import dto.UsuarioRegistroDTO;
 import dto.UsuarioActualizacionDTO;
 import dto.UsuarioResumenDTO;
+import dto.CredencialesDTO;
 import modelo.Usuario;
 import servicio.FactoriaServicios;
 import servicio.IServicioUsuario;
@@ -47,9 +50,11 @@ public class ControladorUsuario {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@PermitAll // Permite el acceso sin token (registro público)
 	public Response altaUsuario(UsuarioRegistroDTO dto) throws Exception {
+		
+		LocalDate fecha = LocalDate.parse(dto.getFechaNacimiento());
 		// El controlador extrae los datos del DTO específico de registro
 		String id = servicio.registrarUsuario(dto.getNombre(), dto.getApellidos(), dto.getEmail(), dto.getClave(),
-				dto.getFechaNacimiento(), dto.getTelefono(), dto.isAdmin());
+				fecha, dto.getTelefono(), dto.isAdmin());
 
 		// Generar cabecera Location (HATEOAS)
 		URI uri = uriInfo.getAbsolutePathBuilder().path(id).build();
@@ -66,7 +71,7 @@ public class ControladorUsuario {
 
 		// Convertimos la Entidad del modelo a DTO (se omite la clave por seguridad)
 		UsuarioDTO dto = new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
-				usuario.getEmail(), usuario.getFechaNacimiento(), usuario.getTelefono(), usuario.isAdmin());
+				usuario.getEmail(),usuario.getFechaNacimiento().toString() , usuario.getTelefono(), usuario.isAdmin());
 
 		return Response.status(Response.Status.OK).entity(dto).build();
 	}
@@ -87,10 +92,11 @@ public class ControladorUsuario {
 			return Response.status(Response.Status.FORBIDDEN)
 					.entity("Acceso denegado: Solo puedes modificar tus propios datos.").build();
 		}
-
+		
+		LocalDate fecha = LocalDate.parse(dto.getFechaNacimiento());
 		// Pasamos los datos del DTO al servicio para actualizar
 		servicio.actualizarDatosUsuario(id, dto.getNombre(), dto.getApellidos(), dto.getEmail(), dto.getClave(),
-				dto.getFechaNacimiento(), dto.getTelefono());
+				fecha, dto.getTelefono());
 
 		return Response.status(Response.Status.NO_CONTENT).build();
 	}
@@ -125,9 +131,7 @@ public class ControladorUsuario {
 		return Response.status(Response.Status.OK).entity(listado).build();
 	}
 
-	// ==========================================
-	// NUEVO ENDPOINT PÚBLICO PARA TAREA 6
-	// ==========================================
+
 
 	// Obtener solo el nombre de un usuario a partir de su ID (Público)
 	@GET
@@ -144,6 +148,59 @@ public class ControladorUsuario {
 
 		// Lo devolvemos con código 200 OK
 		return Response.status(Response.Status.OK).entity(jsonResponse).build();
+	}
+	
+	@POST 
+	@Path("/verificar")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response verificarCredenciales(CredencialesDTO credenciales) {
+		try { 
+			Usuario user = servicio.getByEmail(credenciales.getEmail());
+			//Si las contraseñas coinciden, devolvemos un DTO con los datos del usuario (sin la clave)
+			if (user != null && user.getClave().equals(credenciales.getClave())) {
+				UsuarioDTO dto = new UsuarioDTO(user.getId(), user.getNombre(), user.getApellidos(),
+						user.getEmail(), user.getFechaNacimiento().toString(),user.getTelefono(), user.isAdmin());
+				return Response.ok(dto).build();
+			} else {
+				return Response.status(Response.Status.UNAUTHORIZED).entity("Credenciales incorrectas").build();
+			}
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error al verificar credenciales").build();
+		}
+	}
+	
+	
+	@GET
+	@Path("/buscarPorGitHub")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response buscarPorGitHub(@QueryParam("githubId") String githubId) throws Exception {
+	    Usuario usuario = servicio.getByGitHubId(githubId);
+	    UsuarioDTO dto = new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
+	            usuario.getEmail(), usuario.getFechaNacimiento().toString(), usuario.getTelefono(), usuario.isAdmin());
+	    return Response.ok(dto).build();
+	}
+	
+	@GET
+	@Path("/buscarPorEmail")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response buscarPorEmail(@QueryParam("email") String email) throws Exception {
+	    Usuario usuario = servicio.getByEmail(email);
+	    UsuarioDTO dto = new UsuarioDTO(usuario.getId(), usuario.getNombre(), usuario.getApellidos(),
+	            usuario.getEmail(), usuario.getFechaNacimiento().toString(), usuario.getTelefono(), usuario.isAdmin());
+	    return Response.ok(dto).build();
+	}
+	
+	@POST
+	@Path("/{id}/vincularGitHub")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public Response vincularGitHub(@PathParam("id") String id, @QueryParam("githubId") String githubId) throws Exception {
+	    servicio.vincularGitHub(id, githubId);
+	    return Response.noContent().build();
 	}
 
 }
