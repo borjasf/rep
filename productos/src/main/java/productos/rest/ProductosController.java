@@ -1,6 +1,7 @@
 package productos.rest;
 
 import java.net.URI;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -22,11 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import modelo.Categoria;
 import modelo.EstadoProducto;
 import productos.dto.LugarRecogidaDTO;
 import productos.dto.ModificarProductoDTO;
 import productos.dto.NuevoProductoDTO;
 import productos.dto.ProductoDTO;
+import productos.servicio.IServiciosCategorias;
 import productos.servicio.IServiciosProductos;
 import productos.servicio.ProductoResumen;
 
@@ -35,6 +38,7 @@ import productos.servicio.ProductoResumen;
 public class ProductosController implements ProductosApi {
 
 	private IServiciosProductos servicio;
+	private IServiciosCategorias servicioCategorias;
 	
 	@Autowired
 	private PagedResourcesAssembler<ProductoResumen> pagedResourcesAssembler;
@@ -49,8 +53,9 @@ public class ProductosController implements ProductosApi {
 	private ProductoDTOAssembler productoDTOAssembler;
 	
 	@Autowired
-	public ProductosController(IServiciosProductos servicio) {
+	public ProductosController(IServiciosProductos servicio, IServiciosCategorias servicioCategorias) {
 		this.servicio = servicio;
+		this.servicioCategorias = servicioCategorias;
 	}
 	
 	// REGLA: Usuario registrado (rol USUARIO). El usuario que la solicita debe ser el propietario.
@@ -80,6 +85,13 @@ public class ProductosController implements ProductosApi {
 	public EntityModel<ProductoDTO> getProductoById(@PathVariable String id) throws Exception {
 		ProductoDTO producto = this.servicio.getProductoDTO(id);
 		return productoDTOAssembler.toModel(producto); 
+	}
+
+	// REGLA: Pública.
+	@PreAuthorize("permitAll()")
+	@GetMapping("/categorias")
+	public ResponseEntity<List<Categoria>> getCategorias() throws Exception {
+		return ResponseEntity.ok(this.servicioCategorias.obtenerTodasLasCategorias());
 	}
 
 	// REGLA: Usuario registrado (rol USUARIO) y propietario del producto.

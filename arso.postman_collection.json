@@ -1,0 +1,489 @@
+{
+  "info": {
+    "_postman_id": "ea114709-a6c5-4693-83f3-353b5ae95cb1",
+    "name": "arso",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52309091",
+    "_collection_link": "https://go.postman.co/collection/52309091-ea114709-a6c5-4693-83f3-353b5ae95cb1?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Leer cookies",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhLmNhcnJpb25qb3JkYW5AdW0uZXMiLCJyb2xlcyI6IkFETUlOIiwiZXhwIjoxNzc0Mjc5MzAwfQ.u4RlCzVLwLqNJEWNm0fbKB_SjV_Iy32YohcNBBsssxo",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8090/api/productos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8090",
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8080/api/usuarios",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nombre\": \"Alejandro\",\r\n    \"apellidos\": \"a\",\r\n    \"email\": \"a.carrionjordan@um.es\",\r\n    \"clave\": \"aaaaaa\",\r\n    \"fechaNacimiento\": \"1990-01-15\",\r\n    \"telefono\": \"888776611\",\r\n    \"admin\": true\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/usuarios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "usuarios"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "01-registro usuario nuevo en docker",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Juan\",\r\n  \"apellidos\": \"Pérez\",\r\n  \"email\": \"juan.perez@email.com\",\r\n  \"clave\": \"123456\",\r\n  \"fechaNacimiento\": \"1990-05-15\",\r\n  \"telefono\": \"600123456\",\r\n  \"admin\": false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/usuarios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "usuarios"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "probar consulta de productos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8083/productos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8083",
+          "path": [
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03 -Login Clasico Docker",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();\r",
+              "pm.environment.set(\"token\", json.token);\r",
+              "pm.environment.set(\"userId\", json.id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"juan.perez@email.com\",\r\n  \"clave\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04-Login Clasico Fallido Docker",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"juan.perez@email.com\",\r\n  \"clave\": \"1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02-alta Usuario Publica No Auth",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nombre\": \"Carlos\",\r\n  \"apellidos\": \"García\",\r\n  \"email\": \"carlos@email.com\",\r\n  \"clave\": \"123456\",\r\n  \"fechaNacimiento\": \"1995-10-20\",\r\n  \"telefono\": \"600111222\",\r\n  \"admin\": false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/usuarios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "usuarios"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05-Obtener Productos Publicos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/api/productos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06-Obtener Categorias",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/api/productos/categorias",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "productos",
+            "categorias"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "07-Crear producto privado",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdWFuLnBlcmV6QGVtYWlsLmNvbSIsInJvbGVzIjoiVVNFUiIsImV4cCI6MTc3NDQ1NDQ3N30.AXH1hLfXt6LPHY-rl8Jv87omtEeGWw7L60UU6LSsGJ8",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"titulo\": \"iPhone\",\r\n  \"precio\": 900\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/productos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "productos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "08-Obtener un usuario por id",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdWFuLnBlcmV6QGVtYWlsLmNvbSIsInJvbGVzIjoiVVNFUiIsImV4cCI6MTc3NDQ1NDQ3N30.AXH1hLfXt6LPHY-rl8Jv87omtEeGWw7L60UU6LSsGJ8",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/api/usuarios/52",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "usuarios",
+            "52"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "09-Acceso a usuario que no existe id",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdWFuLnBlcmV6QGVtYWlsLmNvbSIsInJvbGVzIjoiVVNFUiIsImV4cCI6MTc3NDQ1NDQ3N30.AXH1hLfXt6LPHY-rl8Jv87omtEeGWw7L60UU6LSsGJ8",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/api/usuarios/90",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "usuarios",
+            "90"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "10-CrearCompraVenta",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZXMiOiJVU0VSIiwiZXhwIjoxNzc0NDU5NzY0fQ.69eofWaiywjNJfsbFLujR_CB0yv-W9UJ3DlpvDftdGo",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"idProducto\": \"1\",\r\n  \"idComprador\": \"1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/compraventas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "compraventas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "11-Mis compras",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZXMiOiJVU0VSIiwiZXhwIjoxNzc0NDYwMTM2fQ.DQEghsj2QDUPt1kRGhgG3eU5vKbJNMDp8GF0rRh0RCA",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/api/compraventas/compras/56",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "compraventas",
+            "compras",
+            "56"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "12-Mis ventas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/api/compraventas/ventas/56",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "compraventas",
+            "ventas",
+            "56"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "13-Consulta Admin",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9090/api/compraventas//compraventas?comprador=X&vendedor=Y",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "compraventas",
+            "",
+            "compraventas"
+          ],
+          "query": [
+            {
+              "key": "comprador",
+              "value": "X"
+            },
+            {
+              "key": "vendedor",
+              "value": "Y"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.swagger.v3.oas.annotations.Operation;
+import modelo.Categoria;
 import modelo.EstadoProducto;
 import productos.dto.LugarRecogidaDTO;
 import productos.dto.ModificarProductoDTO;
@@ -28,6 +29,10 @@ public interface ProductosApi {
 	 @Operation(summary = "Obtener producto", description = "Obtiene un producto por su id")
 	 @GetMapping("/{id}")
 	 public EntityModel<ProductoDTO> getProductoById(@PathVariable String id) throws Exception;
+
+	 @Operation(summary = "Obtener categorias", description = "Obtiene todas las categorias disponibles")
+	 @GetMapping("/categorias")
+	 public ResponseEntity<List<Categoria>> getCategorias() throws Exception;
 
 	 @Operation(summary = "Dar de alta producto", description = "Da de alta un nuevo producto")
 	 @PostMapping

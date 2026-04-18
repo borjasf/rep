@@ -11,7 +11,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.POST;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ public class ControladorAuth {
 
     public ControladorAuth() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:8080/api/") // Apunta al microservicio Usuarios
+                .baseUrl("http://usuarios:8080/api/") // Apunta al microservicio Usuarios
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
         this.retrofitUsuarios = retrofit.create(RetrofitUsuarios.class);
@@ -93,7 +92,6 @@ public class ControladorAuth {
 */
 	
 	
-	@POST
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody CredencialesDTO credenciales, HttpServletResponse response) {
 		//Para la autenticacion se va a comunicar con el microservicio de usuario a traves de retrofit
@@ -107,7 +105,7 @@ public class ControladorAuth {
 				System.out.println(" Usuario encontrado: " + usuarioValidado.getNombre());
 				//Creamos el token JWT
 				Map<String, Object> claims = new HashMap<>();
-				claims.put("sub", usuarioValidado.getEmail());
+				claims.put("sub", usuarioValidado.getId());
 				claims.put("roles", usuarioValidado.isAdmin() ? "ADMIN" : "USER");
 				System.out.println("Generando token JWT con los siguientes claims: " + claims);
 				String token = JwtUtils.generateToken(claims);

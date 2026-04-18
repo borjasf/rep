@@ -1,12 +1,14 @@
-FROM maven:3.8.5-jdk-8 AS builder
-WORKDIR /app/
+# Construimos el WAR del servicio
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
+WORKDIR /app
 COPY pom.xml .
-RUN mvn -e -B dependency:resolve
 COPY src ./src
-RUN mvn package -DskipTests
+RUN mvn clean package -DskipTests
 
-FROM tomcat:9-jdk8
-WORKDIR /usr/local/tomcat/webapps/
-COPY --from=builder /app/target/*.war ROOT.war
+# Desplegamos el WAR en Tomcat
+FROM tomcat:9.0-jdk8-temurin
+WORKDIR /usr/local/tomcat
+RUN rm -rf webapps/*
+COPY --from=build /app/target/*.war webapps/ROOT.war
+
 EXPOSE 8080
-CMD ["catalina.sh", "run"]

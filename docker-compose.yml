@@ -1,73 +1,118 @@
-version: '3.8'
-
 services:
-  # --- BASES DE DATOS Y MENSAJERÍA ---
+  # 1. Bases de datos y Mensajería
   mysql:
     image: mysql:8
-    restart: always
+    ports:
+      - "3307:3306" # Puerto host 3307 mapeado al 3306 interno de MySQL
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: usuarios_db
-    ports:
-      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql # Script de inicialización
+    networks:
+      - arso-network
 
-  mongo:
-    image: mongo
-    restart: always
+  mongodb:
+    image: mongo:latest
     ports:
       - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - arso-network
 
   rabbitmq:
     image: rabbitmq:3-management
-    restart: always
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5672:5672"   # Puerto de comunicación
+      - "15672:15672" # Puerto del panel web de administración
+    networks:
+      - arso-network
 
-  # --- MICROSERVICIOS ---
+  # 2. Microservicios
   usuarios:
-    build: ./microservicio-usuarios
+    build: 
+      context: ./microservicio-usuarios # Construye usando el Dockerfile de esta carpeta
     ports:
-      - "8081:8080"
+      - "8080:8080"
     environment:
-      - JAVA_OPTS=-Djavax.persistence.jdbc.url=jdbc:mysql://mysql:3306/usuarios_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC -Djavax.persistence.jdbc.user=root -Djavax.persistence.jdbc.password=root
-      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672
+      # Spring Boot lee estas variables y sobrescribe application.properties
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_usuarios?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
-      - mysql
-      - rabbitmq
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - arso-network
 
   productos:
-    build: ./productos
+    build: 
+      context: ./productos
     ports:
-      - "8082:8080"
+      - "8083:8083"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/productos
-      - SPRING_RABBITMQ_ADDRESSES=amqp://guest:guest@rabbitmq:5672
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_productos?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
     depends_on:
-      - mongo
-      - rabbitmq
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - arso-network
 
   compraventas:
-    build: ./microservicio-compraventas/microservicio-compraventas
+    build: 
+      context: ./microservicio-compraventas/microservicio-compraventas
     ports:
-      - "8083:8080"
+      - "8082:8082"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/compraventas
-      - SPRING_RABBITMQ_ADDRESSES=amqp://guest:guest@rabbitmq:5672
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/compraventas_db
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      # URLs para Retrofit
+      - USUARIOS_API_URL=http://usuarios:8080
+      - PRODUCTOS_API_URL=http://productos:8083
     depends_on:
-      - mongo
+      - mongodb
       - rabbitmq
+      - usuarios
+      - productos
+    networks:
+      - arso-network
 
   pasarela:
-    build: ./pasarela
+    build: 
+      context: ./pasarela
     ports:
-      - "8090:8090"
+      - "9090:8090" # El puerto público al que accederás desde tu navegador
     environment:
-      - ZUUL_ROUTES_USUARIOS_URL=http://usuarios:8080/api/usuarios/
-      - ZUUL_ROUTES_PRODUCTOS_URL=http://productos:8080/productos/
-      - ZUUL_ROUTES_COMPRAVENTAS_URL=http://compraventas:8080/compraventas/
-      - API_USUARIOS_URL=http://usuarios:8080/api/
+      # Configuración para que la pasarela sepa dónde están los microservicios
+      - USUARIOS_URL=http://usuarios:8080
+      - PRODUCTOS_URL=http://productos:8083
+      - COMPRAVENTAS_URL=http://compraventas:8082
     depends_on:
       - usuarios
       - productos
       - compraventas
+    networks:
+      - arso-network
+
+# Definición de volúmenes persistentes y redes
+volumes:
+  mysql-data:
+  mongo-data:
+
+networks:
+  arso-network:
+    driver: bridge

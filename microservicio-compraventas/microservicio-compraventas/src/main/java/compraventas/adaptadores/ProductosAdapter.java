@@ -1,5 +1,7 @@
 package compraventas.adaptadores;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Component;
 import compraventas.modelo.externo.ProductoExterno;
 import compraventas.servicio.IProductosPort;
@@ -15,7 +17,7 @@ public class ProductosAdapter implements IProductosPort {
 	public ProductosAdapter() {
 		// Configuramos Retrofit para que apunte al puerto 8081 (donde está Productos)
 		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl("http://localhost:8083/") 
+				.baseUrl("http://productos:8083/") 
 				.addConverterFactory(JacksonConverterFactory.create())
 				.build();
 		
@@ -29,10 +31,12 @@ public class ProductosAdapter implements IProductosPort {
 			
 			if (response.isSuccessful() && response.body() != null) {
 				return response.body();
+			} else if (response.code() == 404) {
+				throw new IllegalArgumentException("No existe un producto con id: " + idProducto);
 			} else {
-				throw new RuntimeException("Producto no encontrado");
+				throw new RuntimeException("Error al consultar Productos. HTTP " + response.code());
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Error de conexión con el microservicio Productos", e);
 		}
 	}

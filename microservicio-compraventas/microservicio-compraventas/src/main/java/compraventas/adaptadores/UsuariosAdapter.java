@@ -1,5 +1,7 @@
 package compraventas.adaptadores;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Component;
 import compraventas.modelo.externo.UsuarioExterno;
 import compraventas.servicio.IUsuariosPort;
@@ -15,7 +17,7 @@ public class UsuariosAdapter implements IUsuariosPort {
 	public UsuariosAdapter() {
 		// Configuramos Retrofit para que apunte al puerto 8080 (donde está Usuarios)
 		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl("http://localhost:8080/") 
+				.baseUrl("http://usuarios:8080/") 
 				.addConverterFactory(JacksonConverterFactory.create())
 				.build();
 		
@@ -30,10 +32,12 @@ public class UsuariosAdapter implements IUsuariosPort {
 			
 			if (response.isSuccessful() && response.body() != null) {
 				return response.body();
+			} else if (response.code() == 404) {
+				throw new IllegalArgumentException("No existe un usuario con id: " + idUsuario);
 			} else {
-				throw new RuntimeException("Usuario no encontrado o error en el servicio");
+				throw new RuntimeException("Error al consultar Usuarios. HTTP " + response.code());
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Error de conexión con el microservicio Usuarios", e);
 		}
 	}

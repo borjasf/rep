@@ -12,16 +12,13 @@ import usuarios.eventos.Evento;
 
 public class PublicadorEventosRabbitMQ implements PublicadorEventos {
 	
-	private final String uri;
+	// Usamos la misma URI de la nube que usa Productos
+	private final String uri = "amqps://oklxofze:TjosECA3Q1TT7Y4XbVEnj7XBnXym52qD@rat.rmq2.cloudamqp.com/oklxofze";
 	
 	public PublicadorEventosRabbitMQ() {
-		// Leemos la variable de entorno de Docker. Si no existe, usamos la de la nube por defecto.
-		String envUri = System.getenv("RABBITMQ_URI");
-		this.uri = (envUri != null && !envUri.isEmpty()) ? envUri : "amqps://oklxofze:TjosECA3Q1TT7Y4XbVEnj7XBnXym52qD@rat.rmq2.cloudamqp.com/oklxofze";
-		
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setUri(this.uri);
+			factory.setUri(uri);
 	
 			Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel();
@@ -31,7 +28,7 @@ public class PublicadorEventosRabbitMQ implements PublicadorEventos {
 			channel.close();
 			connection.close();
 		} catch(Exception e) {
-			throw new RuntimeException("Error al conectar con RabbitMQ: " + e.getMessage(), e);
+			throw new RuntimeException("Error al conectar con RabbitMQ en la nube: " + e.getMessage(), e);
 		}
 	}
 	
@@ -39,7 +36,7 @@ public class PublicadorEventosRabbitMQ implements PublicadorEventos {
 	public void publicarEvento(Evento evento) throws IOException {
 		try {
 			ConnectionFactory factory = new ConnectionFactory();
-			factory.setUri(this.uri);
+			factory.setUri(uri);
 	
 			Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel();
