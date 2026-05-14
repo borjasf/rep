@@ -3,21 +3,39 @@ package productos.dto;
 import modelo.EstadoProducto;
 
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "DTO para crear un nuevo producto")
 public class NuevoProductoDTO {
-	//Ahora ponemos aquellas que no puedan ser nulas con @NotNull
-	@NotNull
+	//Ahora ponemos aquellas que no puedan ser nulas con @NotBlank/@NotNull según tipo
+	@NotBlank
+	@Schema(description = "Título del nuevo producto", example = "Camiseta de algodón")
 	private String titulo;
+
+	@Schema(description = "Descripción del nuevo producto", example = "Camiseta de algodón 100%")
 	private String descripcion;
+
 	@NotNull
 	@DecimalMin(value = "0.0", inclusive = true, message = "El precio no puede ser negativo.")
+	@Schema(description = "Precio del nuevo producto", example = "19.99")
 	private double precio;
+
 	@NotNull
+	@Schema(description = "Estado del nuevo producto")
 	private EstadoProducto estado;
-	@NotNull
+
+	@NotBlank
+	@Schema(description = "ID de la categoría del nuevo producto")
 	private String idCategoria;
+
+	@Schema(description = "Indica si el envío está disponible para el nuevo producto", example = "true")
 	private boolean envioDisponible;
-	@NotNull
+
+	@NotBlank
+	@Schema(description = "ID del vendedor que crea el nuevo producto")
 	private String idVendedor;
 	
 	//POJO 

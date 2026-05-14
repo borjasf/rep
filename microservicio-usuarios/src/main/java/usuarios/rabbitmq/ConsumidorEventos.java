@@ -10,6 +10,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+import usuarios.puertos.IManejadorEventos;
 import usuarios.puertos.ManejadorEventos;
 
 public class ConsumidorEventos {
@@ -20,7 +21,7 @@ public class ConsumidorEventos {
 	private static final String BINDING_KEY = "bus.compraventas.#";
 	private static final String COMPRAVENTA_CREADA_KEY = "bus.compraventas.compraventa-creada";
 
-	private final ManejadorEventos manejador = new ManejadorEventos();
+	private final IManejadorEventos manejador = new ManejadorEventos();
 	private final Gson gson = new Gson();
 	private Connection connection;
 	private Channel channel;

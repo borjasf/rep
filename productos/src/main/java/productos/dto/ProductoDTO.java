@@ -12,26 +12,37 @@ public class ProductoDTO {
 
 	@Schema(description = "Identificador del producto")
 	private String id;
+
 	@Schema(description = "Título del producto")
 	private String titulo; 
+
 	@Schema(description = "Descripción del producto")
 	private String descripcion;
+	
 	@Schema(description = "Precio del producto")
 	private double precio;
+
 	@Schema(description = "Estado del producto")
 	private EstadoProducto estado;
+
 	@Schema(description = "Fecha de publicación del producto")
 	private LocalDateTime fechaPublicacion;
+
 	@Schema(description = "Número de visualizaciones del producto")
 	private int visualizaciones;
+
 	@Schema(description = "Indica si el envío está disponible para el producto")
 	private boolean envioDisponible;
+
 	@Schema(description = "Lugar de recogida del producto")
     private LugarRecogida lugarRecogida;
+
 	@Schema(description = "Nombre de la categoría del producto")
     private String nombreCategoria;
+
 	@Schema(description = "Identificador del vendedor del producto")
     private String vendedor;
+	
 	@Schema(description = "Indica si el producto ya ha sido vendido")
     private boolean vendido; // NUEVO CAMPO
     

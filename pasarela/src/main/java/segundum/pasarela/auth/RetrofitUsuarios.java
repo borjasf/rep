@@ -15,10 +15,10 @@ public interface RetrofitUsuarios {
     Call<UsuarioDTO> verificarCredenciales(@Body CredencialesDTO credenciales); 
     
     //Hacemos un nuevo método para buscar el ususario por el id de GitHub
-    @GET("usuarios/buscarPorGitHub")
+    @GET("usuarios")
     Call<UsuarioDTO> buscarUsuarioPorGitHub(@Query("githubId") String githubId);
     
-    @GET("usuarios/buscarPorEmail")
+    @GET("usuarios")
     Call<UsuarioDTO> buscarUsuarioPorEmail(@Query("email") String email);
     
     @POST("usuarios/{id}/vincularGitHub")

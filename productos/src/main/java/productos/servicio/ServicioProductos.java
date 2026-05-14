@@ -81,7 +81,16 @@ public class ServicioProductos implements IServiciosProductos {
 	@Override
 	public void asignarLugarRecogida(String idProducto, String descripcionLugar, double longitud, double latitud)
 						throws EntidadNoEncontrada, IllegalArgumentException {
-
+		//Hacemos comprobaciones de seguridad y validación de datos antes de modificar el producto
+		if (idProducto == null || idProducto.trim().isEmpty()) {
+			throw new IllegalArgumentException("El ID del producto no puede ser nulo o vacío.");
+		}
+		if(longitud < -180.0 || longitud > 180.0) {
+			throw new IllegalArgumentException("La longitud debe estar entre -180 y 180.");
+		}
+		if(latitud < -90.0 || latitud > 90.0) {
+			throw new IllegalArgumentException("La latitud debe estar entre -90 y 90.");
+		}
 		// 1. Reutilizamos tu método interno
 		Producto producto = getProducto(idProducto); 
 
@@ -103,6 +112,13 @@ public class ServicioProductos implements IServiciosProductos {
 	@Override
 	public void modificarProducto(String id, Double precio, String descripcion) 
             throws EntidadNoEncontrada, IllegalArgumentException {
+		// Validación de datos
+		if (id == null || id.trim().isEmpty()) {
+			throw new IllegalArgumentException("El ID del producto no puede ser nulo o vacío.");
+		}
+		if (precio < 0) {
+			throw new IllegalArgumentException("El precio no puede ser negativo.");
+		}
 		// 1. Reutilizamos tu método interno
 		Producto producto = getProducto(id);
 		

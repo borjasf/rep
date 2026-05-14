@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import modelo.Categoria;
 import modelo.EstadoProducto;
 import productos.dto.LugarRecogidaDTO;
@@ -33,6 +35,8 @@ import productos.servicio.IServiciosCategorias;
 import productos.servicio.IServiciosProductos;
 import productos.servicio.ProductoResumen;
 
+@Tag(name = "Productos", description = "Operaciones relacionadas con los productos en venta")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/productos")
 public class ProductosController implements ProductosApi {
@@ -61,6 +65,7 @@ public class ProductosController implements ProductosApi {
 	// REGLA: Usuario registrado (rol USUARIO). El usuario que la solicita debe ser el propietario.
 	@PreAuthorize("hasRole('USUARIO') and principal.equals(#nuevoProducto.idVendedor)")
 	@PostMapping
+	@Override
 	public ResponseEntity<Void> darAltaProducto(
 			 @Valid @RequestBody NuevoProductoDTO nuevoProducto) throws Exception {
 		
@@ -79,9 +84,11 @@ public class ProductosController implements ProductosApi {
 		 return ResponseEntity.created(nuevaURL).build();
 	}
 
+
 	// REGLA: Pública.
 	@PreAuthorize("permitAll()")
 	@GetMapping("/{id}")
+	@Override
 	public EntityModel<ProductoDTO> getProductoById(@PathVariable String id) throws Exception {
 		ProductoDTO producto = this.servicio.getProductoDTO(id);
 		return productoDTOAssembler.toModel(producto); 
@@ -90,6 +97,7 @@ public class ProductosController implements ProductosApi {
 	// REGLA: Pública.
 	@PreAuthorize("permitAll()")
 	@GetMapping("/categorias")
+	@Override
 	public ResponseEntity<List<Categoria>> getCategorias() throws Exception {
 		return ResponseEntity.ok(this.servicioCategorias.obtenerTodasLasCategorias());
 	}
@@ -97,10 +105,11 @@ public class ProductosController implements ProductosApi {
 	// REGLA: Usuario registrado (rol USUARIO) y propietario del producto.
 	@PreAuthorize("hasRole('USUARIO')")
 	@PatchMapping("/{id}/recogida")
+	@Override
 	public ResponseEntity<Void> asignarLugarRecogida(@PathVariable String id,
 			@Valid @RequestBody LugarRecogidaDTO lugarRecogida) throws Exception {
-		
-		// NOTA: La validación de que el 'principal' es el dueño real del producto con 'id'
+
+		// La validación de que el 'principal' es el dueño real del producto con 'id'
 		// se debe hacer dentro de this.servicio.asignarLugarRecogida(...)
 		this.servicio.asignarLugarRecogida(id, lugarRecogida.getDescripcion(),
 				lugarRecogida.getLongitud(), lugarRecogida.getLatitud());
@@ -110,9 +119,10 @@ public class ProductosController implements ProductosApi {
 	// REGLA: Usuario registrado (rol USUARIO) y propietario del producto.
 	@PreAuthorize("hasRole('USUARIO')")
 	@PatchMapping("/{id}")
+	@Override
 	public ResponseEntity<Void> modificarProducto(@PathVariable String id,
 			@Valid @RequestBody ModificarProductoDTO productoModificado) throws Exception {
-		
+
 		// NOTA: Igual que arriba, validar pertenencia en el servicio
 		this.servicio.modificarProducto(id, productoModificado.getPrecio(), productoModificado.getDescripcion());
 		return ResponseEntity.noContent().build();
@@ -121,6 +131,7 @@ public class ProductosController implements ProductosApi {
 	// REGLA: Pública.
 	@PreAuthorize("permitAll()")
 	@PatchMapping("/{id}/visualizaciones")
+	@Override
 	public ResponseEntity<Void> aniadirVisualizacion(@PathVariable String id) throws Exception {
 		this.servicio.anadirVisualizacion(id);
 		return ResponseEntity.noContent().build();
@@ -129,6 +140,7 @@ public class ProductosController implements ProductosApi {
 	// REGLA: Pública.
 	@PreAuthorize("permitAll()")
 	@GetMapping("/historial/anyo/{anyo}/mes/{mes}")
+	@Override
 	public PagedModel<EntityModel<ProductoDTO>> historialMes(@PathVariable int anyo, @PathVariable int mes, Pageable paginacion) throws Exception {
 		Page<ProductoDTO> resultado = this.servicio.historialDelMesPaginado(mes, anyo, paginacion);
 		return this.pagedResourcesAssemblerDTO.toModel(resultado, productoDTOAssembler);
@@ -137,6 +149,7 @@ public class ProductosController implements ProductosApi {
 	// REGLA: Pública.
 	@PreAuthorize("permitAll()")
 	@GetMapping("/buscar")
+	@Override
 	public PagedModel<EntityModel<ProductoDTO>> buscarProductosVenta(
 			@RequestParam(required = false) String categoria,
 			@RequestParam(required = false) String texto,
@@ -150,6 +163,7 @@ public class ProductosController implements ProductosApi {
 	// REGLA: Pública.
 	@PreAuthorize("permitAll()")
 	@GetMapping
+	@Override
 	public PagedModel<EntityModel<ProductoResumen>> getProductosPaginado(Pageable paginacion) throws Exception {
 		Page<ProductoResumen> resultado = this.servicio.getListadoPaginado(paginacion);
 		return this.pagedResourcesAssembler.toModel(resultado, productosResumenAssembler);

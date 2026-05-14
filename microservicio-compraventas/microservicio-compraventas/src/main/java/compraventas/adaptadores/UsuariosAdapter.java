@@ -2,6 +2,7 @@ package compraventas.adaptadores;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import compraventas.modelo.externo.UsuarioExterno;
 import compraventas.servicio.IUsuariosPort;
@@ -9,18 +10,21 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-@Component 
+@Component
 public class UsuariosAdapter implements IUsuariosPort {
 
 	private RetrofitUsuarios api;
 
-	public UsuariosAdapter() {
-		// Configuramos Retrofit para que apunte al puerto 8080 (donde está Usuarios)
+	public UsuariosAdapter(@Value("${usuarios.api.url}") String baseUrl) {
+		// Retrofit exige que baseUrl termine en "/"
+		if (!baseUrl.endsWith("/")) {
+			baseUrl = baseUrl + "/";
+		}
 		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl("http://usuarios:8080/") 
+				.baseUrl(baseUrl)
 				.addConverterFactory(JacksonConverterFactory.create())
 				.build();
-		
+
 		this.api = retrofit.create(RetrofitUsuarios.class);
 	}
 

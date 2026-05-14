@@ -2,6 +2,7 @@ package compraventas.adaptadores;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import compraventas.modelo.externo.ProductoExterno;
 import compraventas.servicio.IProductosPort;
@@ -14,13 +15,16 @@ public class ProductosAdapter implements IProductosPort {
 
 	private RetrofitProductos api;
 
-	public ProductosAdapter() {
-		// Configuramos Retrofit para que apunte al puerto 8081 (donde está Productos)
+	public ProductosAdapter(@Value("${productos.api.url}") String baseUrl) {
+		// Retrofit exige que baseUrl termine en "/"
+		if (!baseUrl.endsWith("/")) {
+			baseUrl = baseUrl + "/";
+		}
 		Retrofit retrofit = new Retrofit.Builder()
-				.baseUrl("http://productos:8083/") 
+				.baseUrl(baseUrl)
 				.addConverterFactory(JacksonConverterFactory.create())
 				.build();
-		
+
 		this.api = retrofit.create(RetrofitProductos.class);
 	}
 

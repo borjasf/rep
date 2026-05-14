@@ -2,14 +2,14 @@ package usuarios.puertos;
 
 import java.io.IOException;
 
-import repositorio.EntidadNoEncontrada;
-import repositorio.RepositorioException;
-import servicio.FactoriaServicios;
-import servicio.IServicioUsuario;
+import usuarios.repositorio.EntidadNoEncontrada;
+import usuarios.repositorio.RepositorioException;
+import usuarios.servicio.FactoriaServicios;
+import usuarios.servicio.IServicioUsuario;
 
 //Puerto de entrada
 
-public class ManejadorEventos {
+public class ManejadorEventos implements IManejadorEventos {
 
 	private IServicioUsuario servicio = FactoriaServicios.getServicio(IServicioUsuario.class);
 
@@ -21,6 +21,7 @@ public class ManejadorEventos {
 		servicio.incrementarContadorVentas(emailVendedor);
 	}
 
+	@Override
 	public void compraventaCreada(String idComprador, String idVendedor) {
 		try {
 			// 1. Incrementar compras del comprador

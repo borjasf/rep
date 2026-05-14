@@ -23,6 +23,11 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
     networks:
       - arso-network
 
@@ -31,21 +36,28 @@ services:
     ports:
       - "5672:5672"   # Puerto de comunicación
       - "15672:15672" # Puerto del panel web de administración
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
     networks:
       - arso-network
 
   # 2. Microservicios
   usuarios:
-    build: 
+    build:
       context: ./microservicio-usuarios # Construye usando el Dockerfile de esta carpeta
     ports:
       - "8080:8080"
+    # usuarios es Jersey/Tomcat (no Spring Boot): la BD se configura en persistence.xml.
+    # RABBITMQ_URI la leen PublicadorEventosRabbitMQ y ConsumidorEventos como override.
     environment:
-      # Spring Boot lee estas variables y sobrescribe application.properties
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_usuarios?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672
+      - JDBC_URL=jdbc:mysql://mysql:3306/db_usuarios?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - JDBC_USERNAME=root
+      - JDBC_PASSWORD=root
     depends_on:
       mysql:
         condition: service_healthy
@@ -69,6 +81,12 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8083/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - arso-network
 
@@ -84,10 +102,20 @@ services:
       - USUARIOS_API_URL=http://usuarios:8080
       - PRODUCTOS_API_URL=http://productos:8083
     depends_on:
-      - mongodb
-      - rabbitmq
-      - usuarios
-      - productos
+        mongodb:
+          condition: service_healthy
+        rabbitmq:
+          condition: service_started
+        usuarios:
+          condition: service_started
+        productos:
+          condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8082/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - arso-network
 
@@ -98,13 +126,16 @@ services:
       - "9090:8090" # El puerto público al que accederás desde tu navegador
     environment:
       # Configuración para que la pasarela sepa dónde están los microservicios
-      - USUARIOS_URL=http://usuarios:8080
-      - PRODUCTOS_URL=http://productos:8083
-      - COMPRAVENTAS_URL=http://compraventas:8082
+      - ZUUL_ROUTES_USUARIOS_URL=http://usuarios:8080/api/usuarios/
+      - ZUUL_ROUTES_PRODUCTOS_URL=http://productos:8083/productos/
+      - ZUUL_ROUTES_COMPRAVENTAS_URL=http://compraventas:8082/compraventas/
     depends_on:
-      - usuarios
-      - productos
-      - compraventas
+      usuarios:
+        condition: service_started
+      productos:
+        condition: service_healthy
+      compraventas:
+        condition: service_healthy
     networks:
       - arso-network
 
