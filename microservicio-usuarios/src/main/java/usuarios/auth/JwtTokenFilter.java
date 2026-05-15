@@ -70,8 +70,18 @@ public class JwtTokenFilter implements ContainerRequestFilter {
 					if (roles.stream().noneMatch(userRole -> Arrays.asList(allowedRoles).contains(userRole))) {
 						requestContext.abortWith(
 								Response.status(Response.Status.FORBIDDEN).entity("no tiene rol de acceso").build());
+						return;
 					}
 				}
+
+				final String userId = claims.getSubject();
+				final Set<String> userRoles = roles;
+				requestContext.setSecurityContext(new javax.ws.rs.core.SecurityContext() {
+					@Override public java.security.Principal getUserPrincipal() { return () -> userId; }
+					@Override public boolean isUserInRole(String role) { return userRoles.contains(role); }
+					@Override public boolean isSecure() { return false; }
+					@Override public String getAuthenticationScheme() { return "Bearer"; }
+				});
 			} catch (Exception e) { // Error de validación
 				requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(e.getMessage()).build());
 			}

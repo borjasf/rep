@@ -1,489 +1,778 @@
 {
   "info": {
-    "_postman_id": "ea114709-a6c5-4693-83f3-353b5ae95cb1",
-    "name": "arso",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "52309091",
-    "_collection_link": "https://go.postman.co/collection/52309091-ea114709-a6c5-4693-83f3-353b5ae95cb1?source=collection_link"
+    "name": "Arso - Pruebas Postman",
+    "description": "Colección completa de pruebas para el proyecto Arso (4 microservicios). Sigue PRUEBAS_POSTMAN.md. Variables de entorno necesarias: pasarela, usuarios, productos, compraventas, jwtAdmin, jwtVendedor, jwtComprador, idAdmin, idVendedor, idComprador, idCategoria, idProducto, idCompraventa.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    { "key": "pasarela", "value": "http://localhost:9090" },
+    { "key": "usuarios", "value": "http://localhost:8080" },
+    { "key": "productos", "value": "http://localhost:8083" },
+    { "key": "compraventas", "value": "http://localhost:8082" },
+    { "key": "jwtAdmin", "value": "" },
+    { "key": "jwtVendedor", "value": "" },
+    { "key": "jwtComprador", "value": "" },
+    { "key": "idAdmin", "value": "" },
+    { "key": "idVendedor", "value": "" },
+    { "key": "idComprador", "value": "" },
+    { "key": "idCategoria", "value": "" },
+    { "key": "idProducto", "value": "" },
+    { "key": "idCompraventa", "value": "" }
+  ],
   "item": [
     {
-      "name": "Leer cookies",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhLmNhcnJpb25qb3JkYW5AdW0uZXMiLCJyb2xlcyI6IkFETUlOIiwiZXhwIjoxNzc0Mjc5MzAwfQ.u4RlCzVLwLqNJEWNm0fbKB_SjV_Iy32YohcNBBsssxo",
-            "type": "text"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:8090/api/productos",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8090",
-          "path": [
-            "api",
-            "productos"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "http://localhost:8080/api/usuarios",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"nombre\": \"Alejandro\",\r\n    \"apellidos\": \"a\",\r\n    \"email\": \"a.carrionjordan@um.es\",\r\n    \"clave\": \"aaaaaa\",\r\n    \"fechaNacimiento\": \"1990-01-15\",\r\n    \"telefono\": \"888776611\",\r\n    \"admin\": true\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/usuarios",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "api",
-            "usuarios"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "01-registro usuario nuevo en docker",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"nombre\": \"Juan\",\r\n  \"apellidos\": \"Pérez\",\r\n  \"email\": \"juan.perez@email.com\",\r\n  \"clave\": \"123456\",\r\n  \"fechaNacimiento\": \"1990-05-15\",\r\n  \"telefono\": \"600123456\",\r\n  \"admin\": false\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/usuarios",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "api",
-            "usuarios"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "probar consulta de productos",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8083/productos",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8083",
-          "path": [
-            "productos"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "03 -Login Clasico Docker",
-      "event": [
+      "name": "B. End-to-end (camino feliz)",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "const json = pm.response.json();\r",
-              "pm.environment.set(\"token\", json.token);\r",
-              "pm.environment.set(\"userId\", json.id);"
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"email\": \"juan.perez@email.com\",\r\n  \"clave\": \"123456\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:9090/auth/login",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "auth",
-            "login"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "04-Login Clasico Fallido Docker",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"email\": \"juan.perez@email.com\",\r\n  \"clave\": \"1\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:9090/auth/login",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "auth",
-            "login"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "02-alta Usuario Publica No Auth",
-      "request": {
-        "auth": {
-          "type": "noauth"
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"nombre\": \"Carlos\",\r\n  \"apellidos\": \"García\",\r\n  \"email\": \"carlos@email.com\",\r\n  \"clave\": \"123456\",\r\n  \"fechaNacimiento\": \"1995-10-20\",\r\n  \"telefono\": \"600111222\",\r\n  \"admin\": false\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:9090/api/usuarios",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "usuarios"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "05-Obtener Productos Publicos",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:9090/api/productos",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "productos"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "06-Obtener Categorias",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:9090/api/productos/categorias",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "productos",
-            "categorias"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "07-Crear producto privado",
-      "protocolProfileBehavior": {
-        "disableBodyPruning": true
-      },
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+          "name": "B.1.a Alta Admin",
+          "event": [
             {
-              "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdWFuLnBlcmV6QGVtYWlsLmNvbSIsInJvbGVzIjoiVVNFUiIsImV4cCI6MTc3NDQ1NDQ3N30.AXH1hLfXt6LPHY-rl8Jv87omtEeGWw7L60UU6LSsGJ8",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const loc = pm.response.headers.get('Location');",
+                  "if (loc) pm.environment.set('idAdmin', loc.split('/').pop());"
+                ]
+              }
             }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"titulo\": \"iPhone\",\r\n  \"precio\": 900\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:9090/api/productos",
-          "protocol": "http",
-          "host": [
-            "localhost"
           ],
-          "port": "9090",
-          "path": [
-            "api",
-            "productos"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "08-Obtener un usuario por id",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdWFuLnBlcmV6QGVtYWlsLmNvbSIsInJvbGVzIjoiVVNFUiIsImV4cCI6MTc3NDQ1NDQ3N30.AXH1hLfXt6LPHY-rl8Jv87omtEeGWw7L60UU6LSsGJ8",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:9090/api/usuarios/52",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "usuarios",
-            "52"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "09-Acceso a usuario que no existe id",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqdWFuLnBlcmV6QGVtYWlsLmNvbSIsInJvbGVzIjoiVVNFUiIsImV4cCI6MTc3NDQ1NDQ3N30.AXH1hLfXt6LPHY-rl8Jv87omtEeGWw7L60UU6LSsGJ8",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:9090/api/usuarios/90",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "usuarios",
-            "90"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "10-CrearCompraVenta",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZXMiOiJVU0VSIiwiZXhwIjoxNzc0NDU5NzY0fQ.69eofWaiywjNJfsbFLujR_CB0yv-W9UJ3DlpvDftdGo",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"idProducto\": \"1\",\r\n  \"idComprador\": \"1\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "http://localhost:9090/api/compraventas",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "compraventas"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "11-Mis compras",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZXMiOiJVU0VSIiwiZXhwIjoxNzc0NDYwMTM2fQ.DQEghsj2QDUPt1kRGhgG3eU5vKbJNMDp8GF0rRh0RCA",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:9090/api/compraventas/compras/56",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "compraventas",
-            "compras",
-            "56"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "12-Mis ventas",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:9090/api/compraventas/ventas/56",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "compraventas",
-            "ventas",
-            "56"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "13-Consulta Admin",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:9090/api/compraventas//compraventas?comprador=X&vendedor=Y",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "9090",
-          "path": [
-            "api",
-            "compraventas",
-            "",
-            "compraventas"
-          ],
-          "query": [
-            {
-              "key": "comprador",
-              "value": "X"
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Alejandro\",\n  \"apellidos\": \"Admin\",\n  \"email\": \"admin@test.com\",\n  \"clave\": \"admin1234\",\n  \"fechaNacimiento\": \"2000-01-01\",\n  \"telefono\": \"600000001\",\n  \"admin\": true\n}"
             },
+            "url": { "raw": "{{usuarios}}/api/usuarios", "host": ["{{usuarios}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "B.1.b Alta Vendedor",
+          "event": [
             {
-              "key": "vendedor",
-              "value": "Y"
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const loc = pm.response.headers.get('Location');",
+                  "if (loc) pm.environment.set('idVendedor', loc.split('/').pop());"
+                ]
+              }
             }
-          ]
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Vendedor\",\n  \"apellidos\": \"Test\",\n  \"email\": \"vendedor@test.com\",\n  \"clave\": \"vend1234\",\n  \"fechaNacimiento\": \"2000-01-01\",\n  \"telefono\": \"600000002\",\n  \"admin\": false\n}"
+            },
+            "url": { "raw": "{{usuarios}}/api/usuarios", "host": ["{{usuarios}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "B.1.c Alta Comprador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const loc = pm.response.headers.get('Location');",
+                  "if (loc) pm.environment.set('idComprador', loc.split('/').pop());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Comprador\",\n  \"apellidos\": \"Test\",\n  \"email\": \"comprador@test.com\",\n  \"clave\": \"comp1234\",\n  \"fechaNacimiento\": \"2000-01-01\",\n  \"telefono\": \"600000003\",\n  \"admin\": false\n}"
+            },
+            "url": { "raw": "{{usuarios}}/api/usuarios", "host": ["{{usuarios}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "B.2.a Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.environment.set('jwtAdmin', j.token);",
+                  "if (j.identificador) pm.environment.set('idAdmin', j.identificador);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.com\",\n  \"clave\": \"admin1234\"\n}"
+            },
+            "url": { "raw": "{{pasarela}}/auth/login", "host": ["{{pasarela}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "B.2.b Login Vendedor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.environment.set('jwtVendedor', j.token);",
+                  "if (j.identificador) pm.environment.set('idVendedor', j.identificador);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"vendedor@test.com\",\n  \"clave\": \"vend1234\"\n}"
+            },
+            "url": { "raw": "{{pasarela}}/auth/login", "host": ["{{pasarela}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "B.2.c Login Comprador",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.environment.set('jwtComprador', j.token);",
+                  "if (j.identificador) pm.environment.set('idComprador', j.identificador);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"comprador@test.com\",\n  \"clave\": \"comp1234\"\n}"
+            },
+            "url": { "raw": "{{pasarela}}/auth/login", "host": ["{{pasarela}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "B.3 Listar Categorias (guarda idCategoria)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const arr = pm.response.json();",
+                  "if (Array.isArray(arr) && arr.length > 0) pm.environment.set('idCategoria', arr[0].id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{productos}}/productos/categorias", "host": ["{{productos}}"], "path": ["productos", "categorias"] }
+          }
+        },
+        {
+          "name": "B.4 Crear Producto (Vendedor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const loc = pm.response.headers.get('Location');",
+                  "if (loc) pm.environment.set('idProducto', loc.split('/').pop());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Bicicleta de montaña\",\n  \"descripcion\": \"Bici en buen estado\",\n  \"precio\": 150.0,\n  \"estado\": \"BUEN_ESTADO\",\n  \"idCategoria\": \"{{idCategoria}}\",\n  \"envioDisponible\": true,\n  \"idVendedor\": \"{{idVendedor}}\"\n}"
+            },
+            "url": { "raw": "{{pasarela}}/api/productos", "host": ["{{pasarela}}"], "path": ["api", "productos"] }
+          }
+        },
+        {
+          "name": "B.5 Asignar lugar recogida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descripcion\": \"Plaza Circular, Murcia\",\n  \"latitud\": 37.9922,\n  \"longitud\": -1.1307\n}"
+            },
+            "url": { "raw": "{{pasarela}}/api/productos/{{idProducto}}/recogida", "host": ["{{pasarela}}"], "path": ["api", "productos", "{{idProducto}}", "recogida"] }
+          }
+        },
+        {
+          "name": "B.6 GET Producto (público)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{pasarela}}/api/productos/{{idProducto}}", "host": ["{{pasarela}}"], "path": ["api", "productos", "{{idProducto}}"] }
+          }
+        },
+        {
+          "name": "B.7 Búsqueda de productos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{pasarela}}/api/productos/buscar?texto=Bicicleta",
+              "host": ["{{pasarela}}"],
+              "path": ["api", "productos", "buscar"],
+              "query": [{ "key": "texto", "value": "Bicicleta" }]
+            }
+          }
+        },
+        {
+          "name": "B.8 Añadir visualización",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": { "raw": "{{pasarela}}/api/productos/{{idProducto}}/visualizaciones", "host": ["{{pasarela}}"], "path": ["api", "productos", "{{idProducto}}", "visualizaciones"] }
+          }
+        },
+        {
+          "name": "B.9 Crear Compraventa (Comprador)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const loc = pm.response.headers.get('Location');",
+                  "if (loc) pm.environment.set('idCompraventa', loc.split('/').pop());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtComprador}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idProducto\": \"{{idProducto}}\",\n  \"idComprador\": \"{{idComprador}}\"\n}"
+            },
+            "url": { "raw": "{{pasarela}}/api/compraventas", "host": ["{{pasarela}}"], "path": ["api", "compraventas"] }
+          }
+        },
+        {
+          "name": "B.11 GET Compraventa por id (HATEOAS)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtComprador}}" }],
+            "url": { "raw": "{{pasarela}}/api/compraventas/{{idCompraventa}}", "host": ["{{pasarela}}"], "path": ["api", "compraventas", "{{idCompraventa}}"] }
+          }
+        },
+        {
+          "name": "B.12 Comprador ve sus compras",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtComprador}}" }],
+            "url": { "raw": "{{pasarela}}/api/compraventas/compras/{{idComprador}}", "host": ["{{pasarela}}"], "path": ["api", "compraventas", "compras", "{{idComprador}}"] }
+          }
+        },
+        {
+          "name": "B.13 Vendedor ve sus ventas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }],
+            "url": { "raw": "{{pasarela}}/api/compraventas/ventas/{{idVendedor}}", "host": ["{{pasarela}}"], "path": ["api", "compraventas", "ventas", "{{idVendedor}}"] }
+          }
+        },
+        {
+          "name": "B.14 Admin ve transacciones entre dos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtAdmin}}" }],
+            "url": {
+              "raw": "{{pasarela}}/api/compraventas?idComprador={{idComprador}}&idVendedor={{idVendedor}}",
+              "host": ["{{pasarela}}"],
+              "path": ["api", "compraventas"],
+              "query": [
+                { "key": "idComprador", "value": "{{idComprador}}" },
+                { "key": "idVendedor", "value": "{{idVendedor}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "B.15 Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{pasarela}}/auth/logout", "host": ["{{pasarela}}"], "path": ["auth", "logout"] }
+          }
         }
-      },
-      "response": []
+      ]
+    },
+    {
+      "name": "C. Validación feedback profesor",
+      "item": [
+        {
+          "name": "C.1 Tras logout, GET compraventa sin token -> 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{pasarela}}/api/compraventas/{{idCompraventa}}", "host": ["{{pasarela}}"], "path": ["api", "compraventas", "{{idCompraventa}}"] }
+          }
+        },
+        {
+          "name": "C.4.a Producto: titulo vacío -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"\",\n  \"precio\": 10,\n  \"estado\": \"NUEVO\",\n  \"idCategoria\": \"{{idCategoria}}\",\n  \"idVendedor\": \"{{idVendedor}}\"\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos", "host": ["{{pasarela}}"], "path": ["api", "productos"] }
+          }
+        },
+        {
+          "name": "C.4.b Producto: precio negativo -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"X\",\n  \"precio\": -1,\n  \"estado\": \"NUEVO\",\n  \"idCategoria\": \"{{idCategoria}}\",\n  \"idVendedor\": \"{{idVendedor}}\"\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos", "host": ["{{pasarela}}"], "path": ["api", "productos"] }
+          }
+        },
+        {
+          "name": "C.4.c Producto: falta idVendedor -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"X\",\n  \"precio\": 10,\n  \"estado\": \"NUEVO\",\n  \"idCategoria\": \"{{idCategoria}}\"\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos", "host": ["{{pasarela}}"], "path": ["api", "productos"] }
+          }
+        },
+        {
+          "name": "C.4.d Producto: falta idCategoria -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"X\",\n  \"precio\": 10,\n  \"estado\": \"NUEVO\",\n  \"idVendedor\": \"{{idVendedor}}\"\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos", "host": ["{{pasarela}}"], "path": ["api", "productos"] }
+          }
+        },
+        {
+          "name": "C.4.e Producto: falta estado -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"X\",\n  \"precio\": 10,\n  \"idCategoria\": \"{{idCategoria}}\",\n  \"idVendedor\": \"{{idVendedor}}\"\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos", "host": ["{{pasarela}}"], "path": ["api", "productos"] }
+          }
+        },
+        {
+          "name": "C.4.f Recogida: latitud fuera de rango -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"descripcion\": \"X\",\n  \"latitud\": 200,\n  \"longitud\": 0\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos/{{idProducto}}/recogida", "host": ["{{pasarela}}"], "path": ["api", "productos", "{{idProducto}}", "recogida"] }
+          }
+        },
+        {
+          "name": "C.4.g Recogida: longitud fuera de rango -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"descripcion\": \"X\",\n  \"latitud\": 0,\n  \"longitud\": 500\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos/{{idProducto}}/recogida", "host": ["{{pasarela}}"], "path": ["api", "productos", "{{idProducto}}", "recogida"] }
+          }
+        },
+        {
+          "name": "C.4.h Recogida: descripción vacía -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"descripcion\": \"\",\n  \"latitud\": 40,\n  \"longitud\": -3\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos/{{idProducto}}/recogida", "host": ["{{pasarela}}"], "path": ["api", "productos", "{{idProducto}}", "recogida"] }
+          }
+        },
+        {
+          "name": "C.4.i Modificar producto: precio negativo -> 400",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtVendedor}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"precio\": -5\n}" },
+            "url": { "raw": "{{pasarela}}/api/productos/{{idProducto}}", "host": ["{{pasarela}}"], "path": ["api", "productos", "{{idProducto}}"] }
+          }
+        },
+        {
+          "name": "C.8.a Listado usuarios (sin filtros)",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtAdmin}}" }],
+            "url": { "raw": "{{usuarios}}/api/usuarios", "host": ["{{usuarios}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "C.8.b Buscar por email",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{usuarios}}/api/usuarios?email=admin@test.com",
+              "host": ["{{usuarios}}"],
+              "path": ["api", "usuarios"],
+              "query": [{ "key": "email", "value": "admin@test.com" }]
+            }
+          }
+        },
+        {
+          "name": "C.8.c Buscar por githubId",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{usuarios}}/api/usuarios?githubId=12345",
+              "host": ["{{usuarios}}"],
+              "path": ["api", "usuarios"],
+              "query": [{ "key": "githubId", "value": "12345" }]
+            }
+          }
+        },
+        {
+          "name": "C.8.d Endpoint viejo buscarPorEmail -> 404",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{usuarios}}/api/usuarios/buscarPorEmail?email=admin@test.com",
+              "host": ["{{usuarios}}"],
+              "path": ["api", "usuarios", "buscarPorEmail"],
+              "query": [{ "key": "email", "value": "admin@test.com" }]
+            }
+          }
+        },
+        {
+          "name": "C.8.e Endpoint viejo buscarPorGitHub -> 404",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{usuarios}}/api/usuarios/buscarPorGitHub?githubId=12345",
+              "host": ["{{usuarios}}"],
+              "path": ["api", "usuarios", "buscarPorGitHub"],
+              "query": [{ "key": "githubId", "value": "12345" }]
+            }
+          }
+        },
+        {
+          "name": "C.9 Usuario por id (DTO fromEntity)",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtAdmin}}" }],
+            "url": { "raw": "{{usuarios}}/api/usuarios/{{idAdmin}}", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "{{idAdmin}}"] }
+          }
+        },
+        {
+          "name": "C.12.a GET usuario sin token -> 401",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{usuarios}}/api/usuarios/{{idAdmin}}", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "{{idAdmin}}"] }
+          }
+        },
+        {
+          "name": "C.12.b GET usuario con token -> 200",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtAdmin}}" }],
+            "url": { "raw": "{{usuarios}}/api/usuarios/{{idAdmin}}", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "{{idAdmin}}"] }
+          }
+        },
+        {
+          "name": "C.12.c PATCH a otro usuario con jwt distinto -> 403",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('403 Forbidden', () => pm.response.to.have.status(403));"] } }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtComprador}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"hackeado\",\n  \"apellidos\": \"X\",\n  \"email\": \"x@x.com\",\n  \"clave\": \"x\",\n  \"fechaNacimiento\": \"2000-01-01\",\n  \"telefono\": \"600\"\n}" },
+            "url": { "raw": "{{usuarios}}/api/usuarios/{{idVendedor}}", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "{{idVendedor}}"] }
+          }
+        },
+        {
+          "name": "C.12.d PATCH usuario propio -> 204",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('204 No Content', () => pm.response.to.have.status(204));"] } }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtComprador}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Comprador\",\n  \"apellidos\": \"Test\",\n  \"email\": \"comprador@test.com\",\n  \"clave\": \"comp1234\",\n  \"fechaNacimiento\": \"2000-01-01\",\n  \"telefono\": \"600000003\"\n}" },
+            "url": { "raw": "{{usuarios}}/api/usuarios/{{idComprador}}", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "{{idComprador}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "D. Casos negativos generales",
+      "item": [
+        {
+          "name": "D.1 Login credenciales incorrectas -> 401",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('401 Unauthorized', () => pm.response.to.have.status(401));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@test.com\",\n  \"clave\": \"incorrecta\"\n}" },
+            "url": { "raw": "{{pasarela}}/auth/login", "host": ["{{pasarela}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "D.2 Comprar como otro usuario -> 403",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('403 Forbidden', () => pm.response.to.have.status(403));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtComprador}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"idProducto\": \"{{idProducto}}\",\n  \"idComprador\": \"{{idVendedor}}\"\n}" },
+            "url": { "raw": "{{pasarela}}/api/compraventas", "host": ["{{pasarela}}"], "path": ["api", "compraventas"] }
+          }
+        },
+        {
+          "name": "D.3 Comprador ve ventas de otro -> 403",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('403 Forbidden', () => pm.response.to.have.status(403));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtComprador}}" }],
+            "url": { "raw": "{{pasarela}}/api/compraventas/ventas/{{idVendedor}}", "host": ["{{pasarela}}"], "path": ["api", "compraventas", "ventas", "{{idVendedor}}"] }
+          }
+        },
+        {
+          "name": "D.4 Admin intenta operar como USUARIO -> 403",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('403 Forbidden', () => pm.response.to.have.status(403));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtAdmin}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"idProducto\": \"{{idProducto}}\",\n  \"idComprador\": \"{{idAdmin}}\"\n}" },
+            "url": { "raw": "{{pasarela}}/api/compraventas", "host": ["{{pasarela}}"], "path": ["api", "compraventas"] }
+          }
+        },
+        {
+          "name": "D.5 Producto inexistente -> 404",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{pasarela}}/api/productos/no-existe-12345", "host": ["{{pasarela}}"], "path": ["api", "productos", "no-existe-12345"] }
+          }
+        }
+      ]
     }
   ]
 }

@@ -238,17 +238,14 @@ public class ServicioUsuario implements IServicioUsuario {
 
 
 	@Override
-	public void vincularGitHub(String email, String githubId)
+	public void vincularGitHub(String id, String githubId)
 			throws RepositorioException, EntidadNoEncontrada, IOException {
-		Usuario usuarioExistente = repositorioAdHoc.buscarPorEmail(email);
-		if (usuarioExistente == null) {
-			throw new EntidadNoEncontrada("No se encontró el usuario con ID: " + email);
-		}
+		Usuario usuarioExistente = repositorio.getById(id);
 		usuarioExistente.setGitHubId(githubId);
 		repositorio.update(usuarioExistente);
 		
 		//Creamos el evento de actualización de GitHub ID
-		EventoUsuarioActualizado evento = new EventoUsuarioActualizado(usuarioExistente.getId(), email, usuarioExistente.getNombre(), usuarioExistente.getApellidos(), usuarioExistente.getClave(), usuarioExistente.getTelefono(), usuarioExistente.getFechaNacimiento().toString());
+		EventoUsuarioActualizado evento = new EventoUsuarioActualizado(id, usuarioExistente.getEmail(), usuarioExistente.getNombre(), usuarioExistente.getApellidos(), usuarioExistente.getClave(), usuarioExistente.getTelefono(), usuarioExistente.getFechaNacimiento().toString());
 		this.publicadorEventos.publicarEvento(evento);
 		
 	}

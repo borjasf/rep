@@ -62,7 +62,7 @@ public class CompraventasController {
 			@ApiResponse(responseCode = "403", description = "El usuario autenticado no coincide con el comprador"),
 			@ApiResponse(responseCode = "404", description = "El producto o el comprador no existen")
 	})
-	@PreAuthorize("hasRole('USUARIO') and principal.equals(#dto.idComprador)")
+	@PreAuthorize("hasRole('USER') and principal.equals(#dto.idComprador)")
 	@PostMapping
 	public ResponseEntity<Void> registrarCompraventa(@Valid @RequestBody NuevaCompraventaDTO dto) {
 		String id = servicio.registrarCompraventa(dto.getIdProducto(), dto.getIdComprador());
@@ -100,7 +100,7 @@ public class CompraventasController {
 			@ApiResponse(responseCode = "401", description = "Falta autenticación"),
 			@ApiResponse(responseCode = "403", description = "El usuario autenticado no coincide con idComprador")
 	})
-	@PreAuthorize("hasRole('USUARIO') and principal.equals(#idComprador)")
+	@PreAuthorize("hasRole('USER') and principal.equals(#idComprador)")
 	@GetMapping("/compras/{idComprador}")
 	public PagedModel<EntityModel<CompraventaDTO>> getComprasUsuario(
 			@Parameter(description = "Identificador del usuario comprador", required = true, example = "user-42")
@@ -120,7 +120,7 @@ public class CompraventasController {
 			@ApiResponse(responseCode = "401", description = "Falta autenticación"),
 			@ApiResponse(responseCode = "403", description = "El usuario autenticado no coincide con idVendedor")
 	})
-	@PreAuthorize("hasRole('USUARIO') and principal.equals(#idVendedor)")
+	@PreAuthorize("hasRole('USER') and principal.equals(#idVendedor)")
 	@GetMapping("/ventas/{idVendedor}")
 	public PagedModel<EntityModel<CompraventaDTO>> getVentasUsuario(
 			@Parameter(description = "Identificador del usuario vendedor", required = true, example = "user-7")
@@ -140,7 +140,7 @@ public class CompraventasController {
 			@ApiResponse(responseCode = "401", description = "Falta autenticación"),
 			@ApiResponse(responseCode = "403", description = "El usuario autenticado no tiene rol ADMINISTRADOR")
 	})
-	@PreAuthorize("hasRole('ADMINISTRADOR')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping
 	public PagedModel<EntityModel<CompraventaDTO>> getTransacciones(
 			@Parameter(description = "Identificador del comprador", required = true, example = "user-42")

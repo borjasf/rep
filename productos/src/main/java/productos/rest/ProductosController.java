@@ -63,7 +63,7 @@ public class ProductosController implements ProductosApi {
 	}
 	
 	// REGLA: Usuario registrado (rol USUARIO). El usuario que la solicita debe ser el propietario.
-	@PreAuthorize("hasRole('USUARIO') and principal.equals(#nuevoProducto.idVendedor)")
+	@PreAuthorize("hasRole('USER') and principal.equals(#nuevoProducto.idVendedor)")
 	@PostMapping
 	@Override
 	public ResponseEntity<Void> darAltaProducto(
@@ -103,7 +103,7 @@ public class ProductosController implements ProductosApi {
 	}
 
 	// REGLA: Usuario registrado (rol USUARIO) y propietario del producto.
-	@PreAuthorize("hasRole('USUARIO')")
+	@PreAuthorize("hasRole('USER')")
 	@PatchMapping("/{id}/recogida")
 	@Override
 	public ResponseEntity<Void> asignarLugarRecogida(@PathVariable String id,
@@ -117,7 +117,7 @@ public class ProductosController implements ProductosApi {
 	}
 
 	// REGLA: Usuario registrado (rol USUARIO) y propietario del producto.
-	@PreAuthorize("hasRole('USUARIO')")
+	@PreAuthorize("hasRole('USER')")
 	@PatchMapping("/{id}")
 	@Override
 	public ResponseEntity<Void> modificarProducto(@PathVariable String id,

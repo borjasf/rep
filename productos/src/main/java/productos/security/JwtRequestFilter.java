@@ -64,7 +64,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                     // Extraemos ID de usuario (subject) y rol
                     String username = claims.get("sub").asText();
-                    String rol = claims.has("rol") ? claims.get("rol").asText() : "USUARIO";
+                    String rol = claims.has("roles") ? claims.get("roles").asText() : "USUARIO";
 
                     List<GrantedAuthority> authorities = new ArrayList<>();
                     authorities.add(new SimpleGrantedAuthority("ROLE_" + rol));

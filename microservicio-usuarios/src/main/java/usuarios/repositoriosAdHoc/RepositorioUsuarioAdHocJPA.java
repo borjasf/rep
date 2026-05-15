@@ -43,7 +43,7 @@ public class RepositorioUsuarioAdHocJPA extends RepositorioUsuarioJPA implements
 	public Usuario getByGitHubId(String githubId) throws RepositorioException {
 		try {
 			EntityManager em = EntityManagerHelper.getEntityManager();
-			String queryString = "SELECT u FROM Usuario u WHERE u.githubId = :githubIdParam";
+			String queryString = "SELECT u FROM Usuario u WHERE u.gitHubId = :githubIdParam";
 			
 			TypedQuery<Usuario> query = em.createQuery(queryString, Usuario.class);
 			query.setHint(QueryHints.REFRESH, HintValues.TRUE);
